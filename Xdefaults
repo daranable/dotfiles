@@ -1,3 +1,43 @@
+! Solarized color scheme for the X Window System
+!
+! http://ethanschoonover.com/solarized
+
+
+! Common
+
+#define S_yellow    #b58900
+#define S_orange    #cb4b16
+#define S_red       #dc322f
+#define S_magenta   #d33682
+#define S_violet    #6c71c4
+#define S_blue      #268bd2
+#define S_cyan      #2aa198
+#define S_green     #859900
+
+
+! Dark
+
+#define S_base03    #002b36
+#define S_base02    #073642
+#define S_base01    #586e75
+#define S_base00    #657b83
+#define S_base0     #839496
+#define S_base1     #93a1a1
+#define S_base2     #eee8d5
+#define S_base3     #fdf6e3
+
+
+! Light
+
+! #define S_base03 #fdf6e3
+! #define S_base02 #eee8d5
+! #define S_base01 #93a1a1
+! #define S_base00 #839496
+! #define S_base0 #657b83
+! #define S_base1 #586e75
+! #define S_base2 #073642
+! #define S_base3 #002b36
+
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! XTerm                                                               !
@@ -29,7 +69,7 @@ XTerm*vt100.boldMode: false
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Bindings
-!!!!!!!!
+!!!!!!!!!!
 
 ! use right rather than middle mouse to paste
 XTerm*vt100*translations: #override \n\
@@ -39,26 +79,21 @@ XTerm*vt100*translations: #override \n\
 ! Colors
 !!!!!!!!
 
-XTerm*vt100.background: black
-
-XTerm*vt100.foreground: rgb:D3/D7/CF
-
-XTerm*vt100.color0: rgb:00/00/00
-XTerm*vt100.color1: rgb:CC/00/00
-XTerm*vt100.color2: rgb:4E/9A/06
-XTerm*vt100.color3: rgb:C4/A0/00
-XTerm*vt100.color4: rgb:34/65/A4
-XTerm*vt100.color5: rgb:75/50/7B
-XTerm*vt100.color6: rgb:06/98/9A
-XTerm*vt100.color7: rgb:D3/D7/CF
-
-XTerm*vt100.color8:  rgb:55/57/53
-XTerm*vt100.color9:  rgb:EF/29/29
-XTerm*vt100.color10: rgb:8A/E2/34
-XTerm*vt100.color11: rgb:FC/E9/4F
-XTerm*vt100.color12: rgb:72/9F/CF
-XTerm*vt100.color13: rgb:AD/7F/A8
-XTerm*vt100.color14: rgb:34/E2/E2
-XTerm*vt100.color15: rgb:EE/EE/EC
-
-
+XTerm*vt100.background: S_base03
+XTerm*vt100.foreground: S_base0
+XTerm*vt100.color0:     S_base02
+XTerm*vt100.color1:     S_red
+XTerm*vt100.color2:     S_green
+XTerm*vt100.color3:     S_yellow
+XTerm*vt100.color4:     S_blue
+XTerm*vt100.color5:     S_magenta
+XTerm*vt100.color6:     S_cyan
+XTerm*vt100.color7:     S_base2
+XTerm*vt100.color8:     S_base03
+XTerm*vt100.color9:     S_orange
+XTerm*vt100.color10:    S_base01
+XTerm*vt100.color11:    S_base00
+XTerm*vt100.color12:    S_base0
+XTerm*vt100.color13:    S_violet
+XTerm*vt100.color14:    S_base1
+XTerm*vt100.color15:    S_base3
