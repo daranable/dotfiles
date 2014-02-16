@@ -1,17 +1,33 @@
 
 " reset everything to the Vim defaults
-" it's the Vim defaults because this is a vimrc file
 " this ensures consistency between platforms
-set all&
+set nocompatible all&
 
 " set up the Pathogen runtime path mangling system
 runtime bundle/pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 
-" use Solarized Dark colors
-syntax enable
-set background=dark
-colorscheme solarized
+" don't show the intro message on startup
+set shortmess+=I
+
+" use UTF-8 for new files
+set fileencoding=utf-8
+
+" prefer UNIX line endings, even on Windows
+set fileformat=unix fileformats=unix,dos
+
+" keep buffers open even when they're not visible
+set hidden
+
+" use the clipboard register for all unnamed register actions
+" don't connect to X from command-line Vim
+set clipboard=unnamed,exclude:.*
+
+" allow mouse usage in all modes
+set mouse=a
+
+" focus follows mouse, as $deity intended
+set mousefocus
 
 
 if has( "gui_running" )
@@ -19,10 +35,19 @@ if has( "gui_running" )
     set guioptions+=e
 
     " disable the menu and tool bars
-    set guioptions-=m guioptions-=T
+    set guioptions-=m guioptions-=T guioptions+=M
 
     " turn off all the scrollbars
     set guioptions-=l guioptions-=L " left
     set guioptions-=r guioptions-=R " right
     set guioptions-=b               " bottom
+
+    if has("gui_gtk")
+        set guifont='DejaVu Sans Mono 10'
+    endif
 endif
+
+" use Solarized Dark colors
+syntax enable
+set background=dark
+colorscheme solarized
