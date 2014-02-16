@@ -1,6 +1,7 @@
 
 " reset everything to the Vim defaults
 " it's the Vim defaults because this is a vimrc file
+" this ensures consistency between platforms
 set all&
 
 " set up the Pathogen runtime path mangling system
@@ -11,3 +12,17 @@ execute pathogen#infect()
 syntax enable
 set background=dark
 colorscheme solarized
+
+
+if has( "gui_running" )
+    " use the native tab widget
+    set guioptions+=e
+
+    " disable the menu and tool bars
+    set guioptions-=m guioptions-=T
+
+    " turn off all the scrollbars
+    set guioptions-=l guioptions-=L " left
+    set guioptions-=r guioptions-=R " right
+    set guioptions-=b               " bottom
+endif
