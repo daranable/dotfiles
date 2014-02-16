@@ -65,7 +65,8 @@ XTerm*vt100.allowFontOps: false
 !XTerm*vt100.faceSize: 10
 
 ! Disable bold fonts in favor of color brightening
-XTerm*vt100.boldMode: false
+XTerm*vt100.allowBoldFonts: false
+XTerm*vt100.boldColors: false
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Bindings
