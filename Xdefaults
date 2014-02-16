@@ -1,0 +1,64 @@
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! XTerm                                                               !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! Disable write access to the PTY
+XTerm.messages: false
+
+! Disable the toolbar
+XTerm.toolBar: false
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Permissions
+!!!!!!!!!!!!!
+
+! Disable changing the font
+XTerm*vt100.allowFontOps: false
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Fonts
+!!!!!!!
+
+! render in Consolas Regular 10pt
+!XTerm*vt100.faceName: Consolas:style=Regular
+!XTerm*vt100.faceSize: 10
+
+! Disable bold fonts in favor of color brightening
+XTerm*vt100.boldMode: false
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Bindings
+!!!!!!!!
+
+! use right rather than middle mouse to paste
+XTerm*vt100*translations: #override \n\
+    <Btn3Down>,<Btn3Up>: insert-selection(PRIMARY,CUT_BUFFER0)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Colors
+!!!!!!!!
+
+XTerm*vt100.background: black
+
+XTerm*vt100.foreground: rgb:D3/D7/CF
+
+XTerm*vt100.color0: rgb:00/00/00
+XTerm*vt100.color1: rgb:CC/00/00
+XTerm*vt100.color2: rgb:4E/9A/06
+XTerm*vt100.color3: rgb:C4/A0/00
+XTerm*vt100.color4: rgb:34/65/A4
+XTerm*vt100.color5: rgb:75/50/7B
+XTerm*vt100.color6: rgb:06/98/9A
+XTerm*vt100.color7: rgb:D3/D7/CF
+
+XTerm*vt100.color8:  rgb:55/57/53
+XTerm*vt100.color9:  rgb:EF/29/29
+XTerm*vt100.color10: rgb:8A/E2/34
+XTerm*vt100.color11: rgb:FC/E9/4F
+XTerm*vt100.color12: rgb:72/9F/CF
+XTerm*vt100.color13: rgb:AD/7F/A8
+XTerm*vt100.color14: rgb:34/E2/E2
+XTerm*vt100.color15: rgb:EE/EE/EC
+
+
