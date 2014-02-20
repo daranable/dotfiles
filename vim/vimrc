@@ -26,8 +26,7 @@ set softtabstop=4 tabstop=4 shiftwidth=4
 set expandtab
 
 " use the clipboard register for all unnamed register actions
-" don't connect to X from command-line Vim
-set clipboard=unnamed,exclude:.*
+set clipboard+=unnamed
 
 " allow mouse usage in all modes
 set mouse=a
