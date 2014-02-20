@@ -7,3 +7,6 @@
 [submodule "vim/bundle/sensible"]
 	path = vim/bundle/sensible
 	url = git://github.com/tpope/vim-sensible.git
+[submodule "vim/bundle/airline"]
+	path = vim/bundle/airline
+	url = git://github.com/bling/vim-airline.git

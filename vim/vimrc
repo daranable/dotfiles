@@ -3,7 +3,14 @@
 " this ensures consistency between platforms
 set nocompatible all&
 
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#show_buffers=0
+let g:airline#extensions#tabline#tab_min_count=2
+let g:airline#extensions#tabline#show_tab_nr=0
+
 " set up the Pathogen runtime path mangling system
+" this causes plugins to be loaded, so any variable-based
+" plugin configuration must be done above this line
 runtime bundle/pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 
