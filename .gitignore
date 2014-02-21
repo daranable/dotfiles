@@ -1,0 +1,3 @@
+# .gitignore - repo-local Git ignore patterns
+
+/vim/.netrwhist
