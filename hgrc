@@ -1,0 +1,5 @@
+# ~/.hgrc - per-user configuration for the Mercurial SCM
+
+[ui]
+username = Sam Hanes <sam@maltera.com>
+ignore = ~/.hgignore
