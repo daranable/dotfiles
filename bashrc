@@ -35,34 +35,58 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
-
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
     # We have color support; assume it's compliant with Ecma-48
     # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
     # a case would tend to support setf rather than setaf.)
-    color_prompt=yes
+    _bashrc_color=yes
 else
-    color_prompt=
+    _bashrc_color=
 fi
 
-if [ 0 -eq "$UID" ]; then
-    if [ "$color_prompt" = yes ]; then
-        PS1='\[\e[01;31m\]\h ${debian_chroot:+\[\e[01;33m\]($debian_chroot) }\[\e[01;34m\]#\[\e[00m\] '
+function _bashrc_ps1 {
+    function color {
+        if [[ -n "$_bashrc_color" ]]; then
+            local IFS=";$IFS"
+            echo -en "\e[$*m"
+        fi
+    }
+
+    if [[ 0 -eq $UID ]]; then
+        color 01 31
+        echo -n "$HOSTNAME "
     else
-        PS1='\h ${debian_chroot:+($debian_chroot) }# '
+        color 01 32
+        echo -n "$USER@$HOSTNAME "
     fi
-else 
-    if [ "$color_prompt" = yes ]; then
-        PS1='\[\e[01;32m\]\u@\h ${debian_chroot:+\[\e[01;33m\]($debian_chroot) }\[\e[01;34m\]\$\[\e[00m\] '
+
+    if [[ -n "$debian_chroot" ]]; then
+        color 01 33
+        echo -n "($debian_chroot) "
+    fi
+
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        local venv_name="$(basename "$VIRTUAL_ENV")"
+        if [[ "." == "${venv_name:0:1}" ]]; then
+            local venv_dir="$(basename "$(dirname "$VIRTUAL_ENV")")"
+            if [[ "." != "${venv_dir:0:1}" ]]; then
+                venv_name="$venv_dir"
+            fi
+        fi
+
+        color 01 33
+        echo -n "$venv_name "
+    fi
+
+    color 01 34
+    if [[ 0 -eq $UID ]]; then
+        echo -n '#'
     else
-        PS1='\u@\h ${debian_chroot:+($debian_chroot) }\$ '
+        echo -n '$'
     fi
-fi
-unset color_prompt force_color_prompt
+}
+
+PS1='$(_bashrc_ps1)\[\e[00m\] '
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -72,6 +96,9 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+# we handle virtualenv prompts ourselves
+export VIRTUAL_ENV_DISABLE_PROMPT=yes
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
