@@ -3,7 +3,9 @@
 " this ensures consistency between platforms
 set nocompatible all&
 
-let airline_powerline_fonts=1
+if &term != "linux"
+    let airline_powerline_fonts=1
+endif
 
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#show_buffers=0
@@ -62,7 +64,10 @@ if has( "gui_running" )
     endif
 endif
 
-" use Solarized Dark colors
 syntax enable
-set background=dark
-colorscheme solarized
+
+if &term != "linux"
+    " use Solarized Dark colors
+    set background=dark
+    colorscheme solarized
+endif
