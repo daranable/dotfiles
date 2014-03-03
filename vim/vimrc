@@ -45,6 +45,11 @@ set mouse=a
 " focus follows mouse, as $deity intended
 set mousefocus
 
+" use <Tab> completion similar to bash
+" insert the longest common prefix on first activation
+" on second activation list all possible completions
+set wildmode=longest,list:longest
+
 set number numberwidth=4
 
 if has( "gui_running" )
