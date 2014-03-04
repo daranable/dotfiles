@@ -44,25 +44,31 @@ else
     _bashrc_color=
 fi
 
-function _bashrc_ps1 {
+function _bashrc_prompt {
+    local _prompt=''
+
     function color {
         if [[ -n "$_bashrc_color" ]]; then
             local IFS=";$IFS"
-            echo -en "\e[$*m"
+            _prompt="${_prompt}\[\e[$*m\]"
         fi
+    }
+
+    function write {
+        _prompt="${_prompt}$*"
     }
 
     if [[ 0 -eq $UID ]]; then
         color 01 31
-        echo -n "$HOSTNAME "
+        write "\h "
     else
         color 01 32
-        echo -n "$USER@$HOSTNAME "
+        write "\u@\h "
     fi
 
     if [[ -n "$debian_chroot" ]]; then
         color 01 33
-        echo -n "($debian_chroot) "
+        write "($debian_chroot) "
     fi
 
     if [[ -n "$VIRTUAL_ENV" ]]; then
@@ -75,18 +81,19 @@ function _bashrc_ps1 {
         fi
 
         color 01 33
-        echo -n "$venv_name "
+        write "$venv_name "
     fi
 
     color 01 34
-    if [[ 0 -eq $UID ]]; then
-        echo -n '#'
-    else
-        echo -n '$'
-    fi
+    write '\$'
+    color 00
+    write ' '
+
+    PS1="$_prompt"
 }
 
-PS1='$(_bashrc_ps1)\[\e[00m\] '
+PROMPT_COMMAND="_bashrc_prompt"
+$PROMPT_COMMAND
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
