@@ -1,3 +1,8 @@
 # .gitignore - repo-local Git ignore patterns
 
 /vim/.netrwhist
+
+# eclim needs to be installed locally every time because it integrates
+# with the local Eclipse installation. We move it into the bundle dir
+# for isolation and then ignore it.
+/vim/bundle/eclim/
