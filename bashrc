@@ -49,8 +49,33 @@ function _bashrc_prompt {
 
     function color {
         if [[ -n "$_bashrc_color" ]]; then
-            local IFS=";$IFS"
-            _prompt="${_prompt}\[\e[$*m\]"
+            local _escape=''
+            local _color="$1"
+
+            if [[ -n "$2" ]]; then
+                case "$1" in
+                    bold|bright)
+                        _escape+='01;'
+                        ;;
+                esac
+                _color="$2"
+            fi
+
+            case "$_color" in
+                black)      _escape+='30';;
+                red)        _escape+='31';;
+                green)      _escape+='32';;
+                yellow)     _escape+='33';;
+                blue)       _escape+='34';;
+                magenta)    _escape+='35';;
+                cyan)       _escape+='36';;
+                white)      _escape+='37';;
+                reset)      _escape='00';;
+            esac
+
+            if [[ -n "$_escape" ]]; then
+                _prompt="${_prompt}\[\e[${_escape}m\]"
+            fi
         fi
     }
 
@@ -59,15 +84,15 @@ function _bashrc_prompt {
     }
 
     if [[ 0 -eq $UID ]]; then
-        color 01 31
+        color bold red
         write "\h "
     else
-        color 01 32
+        color bold green
         write "\u@\h "
     fi
 
     if [[ -n "$debian_chroot" ]]; then
-        color 01 33
+        color bold yellow
         write "($debian_chroot) "
     fi
 
@@ -80,13 +105,13 @@ function _bashrc_prompt {
             fi
         fi
 
-        color 01 33
+        color bold yellow
         write "$venv_name "
     fi
 
-    color 01 34
+    color bold blue
     write '\$'
-    color 00
+    color reset
     write ' '
 
     PS1="$_prompt"
