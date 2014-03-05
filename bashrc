@@ -49,33 +49,33 @@ function _bashrc_prompt {
 
     function color {
         if [[ -n "$_bashrc_color" ]]; then
-            local _escape=''
-            local _color="$1"
+            local -a _escape=( '00' )
+            local _base='3' # foreground
 
-            if [[ -n "$2" ]]; then
-                case "$1" in
-                    bold|bright)
-                        _escape+='01;'
-                        ;;
+            for token in "$@"; do
+                case "$token" in
+                    bold)       _escape+=( '01' );;
+
+                    black)      _escape+=( "${_base}0" );;
+                    red)        _escape+=( "${_base}1" );;
+                    green)      _escape+=( "${_base}2" );;
+                    yellow)     _escape+=( "${_base}3" );;
+                    blue)       _escape+=( "${_base}4" );;
+                    magenta)    _escape+=( "${_base}5" );;
+                    cyan)       _escape+=( "${_base}6" );;
+                    white)      _escape+=( "${_base}7" );;
+
+                    fore|foreground) _base='3';;
+                    back|background) _base='4';;
+
+                    reset)
+                        _escape=( '00' )
+                        break ;;
                 esac
-                _color="$2"
-            fi
+            done
 
-            case "$_color" in
-                black)      _escape+='30';;
-                red)        _escape+='31';;
-                green)      _escape+='32';;
-                yellow)     _escape+='33';;
-                blue)       _escape+='34';;
-                magenta)    _escape+='35';;
-                cyan)       _escape+='36';;
-                white)      _escape+='37';;
-                reset)      _escape='00';;
-            esac
-
-            if [[ -n "$_escape" ]]; then
-                _prompt="${_prompt}\[\e[${_escape}m\]"
-            fi
+            local IFS=";${IFS}"
+            _prompt="${_prompt}\[\e[${_escape[*]}m\]"
         fi
     }
 
