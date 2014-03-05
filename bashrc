@@ -39,43 +39,46 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
     # We have color support; assume it's compliant with Ecma-48
     # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
     # a case would tend to support setf rather than setaf.)
-    _bashrc_color=yes
+    function _bashrc_color {
+        local -a _escape=( '00' )
+        local _base='3' # foreground
+
+        for token in "$@"; do
+            case "$token" in
+                bold)       _escape+=( '01' );;
+
+                black)      _escape+=( "${_base}0" );;
+                red)        _escape+=( "${_base}1" );;
+                green)      _escape+=( "${_base}2" );;
+                yellow)     _escape+=( "${_base}3" );;
+                blue)       _escape+=( "${_base}4" );;
+                magenta)    _escape+=( "${_base}5" );;
+                cyan)       _escape+=( "${_base}6" );;
+                white)      _escape+=( "${_base}7" );;
+
+                fore|foreground) _base='3';;
+                back|background) _base='4';;
+
+                reset)
+                    _escape=( '00' )
+                    break ;;
+            esac
+        done
+
+        local IFS=";${IFS}"
+        echo -en "\e[${_escape[*]}m"
+    }
 else
-    _bashrc_color=
+    function _bashrc_color { echo -n ""; }
 fi
 
 function _bashrc_prompt {
     local _prompt=''
 
     function color {
-        if [[ -n "$_bashrc_color" ]]; then
-            local -a _escape=( '00' )
-            local _base='3' # foreground
-
-            for token in "$@"; do
-                case "$token" in
-                    bold)       _escape+=( '01' );;
-
-                    black)      _escape+=( "${_base}0" );;
-                    red)        _escape+=( "${_base}1" );;
-                    green)      _escape+=( "${_base}2" );;
-                    yellow)     _escape+=( "${_base}3" );;
-                    blue)       _escape+=( "${_base}4" );;
-                    magenta)    _escape+=( "${_base}5" );;
-                    cyan)       _escape+=( "${_base}6" );;
-                    white)      _escape+=( "${_base}7" );;
-
-                    fore|foreground) _base='3';;
-                    back|background) _base='4';;
-
-                    reset)
-                        _escape=( '00' )
-                        break ;;
-                esac
-            done
-
-            local IFS=";${IFS}"
-            _prompt="${_prompt}\[\e[${_escape[*]}m\]"
+        local _color="$(_bashrc_color "$@")"
+        if [[ -n "$_color" ]]; then
+            _prompt="${_prompt}\[\e${_color:1}\]"
         fi
     }
 
