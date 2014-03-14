@@ -3,3 +3,7 @@
 [ui]
 username = Sam Hanes <sam@maltera.com>
 ignore = ~/.hgignore
+
+[extensions]
+purge =
+shelve = ~/.hgext/hgshelve.py

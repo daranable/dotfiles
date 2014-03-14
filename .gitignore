@@ -6,3 +6,6 @@
 # with the local Eclipse installation. We move it into the bundle dir
 # for isolation and then ignore it.
 /vim/bundle/eclim/
+
+# Mercurial compiles its extensions into their source dir
+/hgext/*.pyc
