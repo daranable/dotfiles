@@ -1,4 +1,6 @@
 # ~/.hgignore - global ignore patterns for the Mercurial SCM
 
+syntax: glob
+
 # Vim swap files
 .*.sw?
