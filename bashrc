@@ -154,6 +154,9 @@ alias psf='ps -fN --pid 2 --ppid 2 --forest'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+# Add an alias to feh to start Fullscreen and auto-zoom.
+alias feh='feh -ZF'
+
 # load rbenv if it's installed
 if which rbenv >&/dev/null; then
     eval "$(rbenv init -)"
