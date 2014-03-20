@@ -13,3 +13,6 @@
 [submodule "vim/bundle/fugitive"]
 	path = vim/bundle/fugitive
 	url = git://github.com/tpope/vim-fugitive.git
+[submodule ".config/awesome/themes/awesome-solarized"]
+	path = .config/awesome/themes/awesome-solarized
+	url = git@github.com:cycojesus/awesome-solarized.git
