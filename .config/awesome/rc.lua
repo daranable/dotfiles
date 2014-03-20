@@ -74,6 +74,24 @@ end
 -- }}}
 
 -------------------------------------------------------------------------------
+-- Bug Fix                                                                   --
+-------------------------------------------------------------------------------
+
+local setscreen = awful.tag.setscreen;
+
+awful.tag.setscreen = function( tag, target_screen )
+    if not tag or type(tag) ~= "tag" then return end
+    setscreen( tag, target_screen );
+    
+    for _, client in ipairs( tag:clients() ) do
+        -- Move all client's screen's
+        client.screen = target_screen or 1;
+        -- Fix some strange side effects
+        client:tags( {tag} );
+    end
+end
+
+-------------------------------------------------------------------------------
 -- Tag Creation                                                              --
 -------------------------------------------------------------------------------
 
@@ -91,7 +109,7 @@ tags = { unpack(
     awful.tag( 
         { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
         1, 
-        awful.layout.suit.tile.left 
+        awful.layout.suit.tile 
     )
 ) };
 
@@ -248,6 +266,10 @@ local globalkeys = awful.util.table.join(
     -- Focus Master window
     awful.key( { modkey,            }, "m", function ()
         client.focus = awful.client.getmaster();
+    end ),
+
+    awful.key( { modkey, "Shift"    }, "Return", function()
+        awful.util.spawn( terminal );
     end )
 );
 
@@ -310,6 +332,8 @@ for index = 1, tag_count do
             
             if curtag == tag then return end
             
+            --awful.tag.viewnone( curscreen );
+
             if tag_is_visible( tag ) then
                 local oldscreen = awful.tag.getscreen( tag );
 
