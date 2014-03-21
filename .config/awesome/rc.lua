@@ -120,61 +120,6 @@ for s=1, screen.count() do
 end
 
 -------------------------------------------------------------------------------
--- Status Bar                                                                --
--------------------------------------------------------------------------------
-
-local myawesomemenu = {
-    { "manual", terminal .. " -e man awesome" },
-    { "edit config", editor_cmd .. " " .. awesome.conffile },
-    { "restart", awesome.restart },
-    { "quit", awesome.quit }
-}
-local mymainmenu = awful.menu( {
-    items = { 
-        { "awesome", myawesomemenu },
-        { "terminal", terminal }
-    }
-} );
-
-local mylauncher = awful.widget.launcher( {
-    image = beautiful.awesome_icon,
-    menu  = mymainmenu
-} );
-
-local mywibox = { };
-local mypromptbox = { };
-local mytag = { };
-
-menubar.utils.terminal = terminal;
-
-local mytextclock = awful.widget.textclock();
-
-for s = 1, screen.count() do
-    mypromptbox[ s ] = awful.widget.prompt();
-
-    --mytag[ s ] = awful.widget.text_box();
-    screen[ s ]:add_signal( "tag::history::update", function()
-        mytag[ s ]:set_text( awful.tag.selected( 1 ).name );
-    end);
-
-    mywibox[ s ] = awful.wibox( { position = "top", screen = s } );
-
-    local left_layout = wibox.layout.fixed.horizontal();
-    left_layout:add( mylauncher );
-    --left_layout:add( mytag[ s ] );
-    left_layout:add( mypromptbox[ s ] );
-
-    local right_layout = wibox.layout.fixed.horizontal();
-    right_layout:add( mytextclock );
-
-    local layout = wibox.layout.align.horizontal();
-    layout:set_left( left_layout );
-    layout:set_right( right_layout );
-
-    mywibox[ s ]:set_widget( layout );
-end
-
--------------------------------------------------------------------------------
 -- Mouse Bindings                                                            --
 -------------------------------------------------------------------------------
 
@@ -250,7 +195,7 @@ local globalkeys = awful.util.table.join(
     
     -- Run prompt dialog
     awful.key( { modkey, "Shift"    }, "p", function ()
-        mypromptbox[ mouse.screen ]:run();
+        awful.util.spawn( 'gmrun' );
     end ),
     
     -- Execute lua in context of WM.
