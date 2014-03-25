@@ -13,3 +13,9 @@
 [submodule "vim/bundle/fugitive"]
 	path = vim/bundle/fugitive
 	url = git://github.com/tpope/vim-fugitive.git
+[submodule "dockerfile.vim"]
+	path = dockerfile.vim
+	url = git://github.com/Elemecca/dockerfile.vim.git
+[submodule "vim/bundle/dockerfile"]
+	path = vim/bundle/dockerfile
+	url = git://github.com/Elemecca/dockerfile.vim.git
