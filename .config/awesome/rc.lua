@@ -333,6 +333,10 @@ awful.rules.rules = {
         rule = { instance = "plugin-container" },
         properties = { floating = true }
     },
+    {
+        rule = { class = "XTerm" },
+        properties = { size_hints_honor = false }
+    },
 }
 
 -------------------------------------------------------------------------------
