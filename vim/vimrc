@@ -22,10 +22,11 @@ execute pathogen#infect()
 set shortmess+=I
 
 " use UTF-8 for new files
-set fileencoding=utf-8
+setglobal fileencoding=utf-8
 
 " prefer UNIX line endings, even on Windows
-set fileformat=unix fileformats=unix,dos
+set fileformats=unix,dos
+setglobal fileformat=unix
 
 " keep buffers open even when they're not visible
 set hidden
