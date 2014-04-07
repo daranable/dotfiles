@@ -7,5 +7,9 @@
 # for isolation and then ignore it.
 /vim/bundle/eclim/
 
+# lawrencium can't be installed via git submodules because
+# it lives in a Mercurial repository (of course)
+/vim/bundle/lawrencium/
+
 # Mercurial compiles its extensions into their source dir
 /hgext/*.pyc
