@@ -10,3 +10,4 @@ revert = revert --no-backup $@
 [extensions]
 purge =
 shelve = ~/.hgext/hgshelve.py
+rebase = 
