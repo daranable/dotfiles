@@ -150,6 +150,9 @@ fi
 alias ls='ls -Alh --color=auto'
 alias psf='ps -fN --pid 2 --ppid 2 --forest'
 
+# keep manpages to a reasonable width, even on big terminals
+export MANWIDTH=80
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
