@@ -4,6 +4,9 @@
 username = Sam Hanes <sam@maltera.com>
 ignore = ~/.hgignore
 
+[aliases]
+revert = revert --no-backup $@
+
 [extensions]
 purge =
 shelve = ~/.hgext/hgshelve.py
