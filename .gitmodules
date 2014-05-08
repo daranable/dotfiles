@@ -19,3 +19,6 @@
 [submodule "vim/bundle/dockerfile"]
 	path = vim/bundle/dockerfile
 	url = git://github.com/Elemecca/dockerfile.vim.git
+[submodule "vim/bundle/vim-coffee-script"]
+	path = vim/bundle/vim-coffee-script
+	url = git://github.com/kchmck/vim-coffee-script.git
