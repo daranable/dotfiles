@@ -22,3 +22,6 @@ if [ -d "$HOME/.bin" ] ; then
 fi
 
 export EDITOR=$(which vim 2>&-)
+
+export DEBFULLNAME="Sam Hanes"
+export DEBEMAIL="sam@maltera.com"
