@@ -1,5 +1,8 @@
 
 import XMonad
+import XMonad.Actions.NoBorders
+import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.NoBorders
 
 import System.Exit
 import System.Posix.Process (executeFile, createSession)
@@ -41,6 +44,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask,                xK_t        ), withFocused $ windows . W.sink)
 --    , ((modMask .|. shiftMask,  xK_t        ), withFocused $ windows . W.float)
 
+    , ((modMask,                xK_g        ), withFocused $ toggleBorder)
+
     , ((modMask .|. shiftMask,  xK_q        ), io exitSuccess)
     , ((modMask,                xK_q        ), spawn (
         "if type xmonad; then xmonad --recompile && xmonad --restart;"
@@ -59,4 +64,5 @@ main = xmonad $ defaultConfig
     { terminal = "xterm"
     , workspaces = map show [1 .. 12 :: Int]
     , keys = myKeys
+    , layoutHook = smartBorders $ layoutHook defaultConfig
     }
