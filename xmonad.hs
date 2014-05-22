@@ -25,6 +25,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,  xK_Return   ), exec [terminal conf])
     , ((modMask              ,  xK_Return   ), exec ["gmrun"])
 
+    , ((modMask,                xK_space    ), sendMessage NextLayout)
+    , ((modMask .|. shiftMask,  xK_space    ), setLayout $ layoutHook conf)
+
     , ((modMask .|. shiftMask,  xK_c        ), kill)
 
     , ((modMask,                xK_j        ), windows W.focusDown)
