@@ -24,6 +24,7 @@ myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,  xK_Return   ), exec [terminal conf])
     , ((modMask              ,  xK_Return   ), exec ["gmrun"])
+    , ((mod4Mask,               xK_l        ), exec ["slock"])
 
     , ((modMask,                xK_space    ), sendMessage NextLayout)
     , ((modMask .|. shiftMask,  xK_space    ), setLayout $ layoutHook conf)
