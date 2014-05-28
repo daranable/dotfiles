@@ -1,30 +1,55 @@
+-- vim:ft=haskell:sts=2:sw=2:et:
 
 import XMonad
 import XMonad.Actions.NoBorders
 import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.NoBorders
 
+import Control.Monad
+import System.Directory
 import System.Exit
-import System.Posix.Process (executeFile, createSession)
+import System.Posix.IO
+import System.Posix.Process
+import System.Posix.Signals
 
 import qualified XMonad.StackSet as W
 
 import qualified Data.Map as M
 
--- double-fork and execvp a command
-exec :: MonadIO m => [String] -> m ()
-exec [] = error "exec requires at least a command"
-exec (cmd:args) =
-    let usePath = True
-        environ = Nothing
-        command = executeFile cmd usePath args environ
-    in  xfork command >> return ()
+-- This implements the process for becoming a daemon as described
+-- in Stevens with a few exceptions. The current directory is changed
+-- to the user's home directory instead of the root directory as that
+-- feels more natural for shells. We leave the file creation mask
+-- alone as the user's default is probably what they want.
+-- File descriptors other than standard IO aren't closed as doing so
+-- is not reasonably possible in Haskell.
+mySpawn :: MonadIO m => FilePath -> [String] -> m ()
+mySpawn exe args = io $ void $ forkProcess $ doFork
+  where
+    doFork = do
+      XMonad.uninstallSignalHandlers
+      createSession
+      void $ forkProcess $ doExec
+      exitImmediately ExitSuccess
+
+    doExec = do
+      getHomeDirectory >>= setCurrentDirectory
+      reopenStreams
+      executeFile exe True args Nothing
+
+    reopenStreams = do
+      null <- openFd "/dev/null" ReadWrite Nothing defaultFileFlags
+      let sendTo fd' fd = closeFd fd >> dupTo fd' fd
+      mapM_ (sendTo null) $ [ stdInput, stdOutput, stdError ]
+
+mySpawn' :: MonadIO m => FilePath -> m ()
+mySpawn' x = mySpawn x []
 
 myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
-    [ ((modMask .|. shiftMask,  xK_Return   ), exec [terminal conf])
-    , ((modMask              ,  xK_Return   ), exec ["gmrun"])
-    , ((mod4Mask,               xK_l        ), exec ["slock"])
+    [ ((modMask .|. shiftMask,  xK_Return   ), mySpawn' $ terminal conf)
+    , ((modMask              ,  xK_Return   ), mySpawn' "gmrun")
+    , ((mod4Mask,               xK_l        ), mySpawn' "slock")
 
     , ((modMask,                xK_space    ), sendMessage NextLayout)
     , ((modMask .|. shiftMask,  xK_space    ), setLayout $ layoutHook conf)
