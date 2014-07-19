@@ -8,6 +8,8 @@ ignore = ~/.hgignore
 revert = revert --no-backup $@
 
 [extensions]
+color =
 purge =
-shelve = ~/.hgext/hgshelve.py
 rebase = 
+shelve =
+strip =
