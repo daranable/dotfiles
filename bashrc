@@ -8,6 +8,9 @@ case $- in
       *) return;;
 esac
 
+# detect Max OS X
+have_osx=$([[ "$(uname -s)" == "Darwin" ]])
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -66,7 +69,7 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
         done
 
         local IFS=";${IFS}"
-        echo -en "\e[${_escape[*]}m"
+        echo -en "\033[${_escape[*]}m"
     }
 else
     function _bashrc_color { echo -n ""; }
@@ -147,8 +150,13 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias ls='ls -Alh --color=auto'
-alias psf='ps -fN --pid 2 --ppid 2 --forest'
+if $have_osx; then
+    alias ls='ls -AlhG'
+    alias psf='ps -Af'
+else
+    alias ls='ls -Alh --color=auto'
+    alias psf='ps -fN --pid 2 --ppid 2 --forest'
+fi
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert

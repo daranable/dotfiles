@@ -15,7 +15,7 @@
 	url = git://github.com/tpope/vim-fugitive.git
 [submodule ".config/awesome/themes/awesome-solarized"]
 	path = .config/awesome/themes/awesome-solarized
-	url = git@github.com:cycojesus/awesome-solarized.git
+	url = git://github.com/cycojesus/awesome-solarized.git
 [submodule "vim/bundle/jshint2.vim"]
 	path = vim/bundle/jshint2.vim
-	url = git@github.com:Shutnik/jshint2.vim.git
+	url = git://github.com/Shutnik/jshint2.vim.git
