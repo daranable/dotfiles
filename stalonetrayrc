@@ -1,0 +1,14 @@
+background black
+
+icon_size 24
+kludges force_icons_size
+
+grow_gravity NE
+icon_gravity NE
+
+sticky yes
+window_type  dock
+window_strut top
+window_layer bottom
+skip_taskbar true
+

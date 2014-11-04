@@ -28,6 +28,8 @@ normal gitignore
 normal profile
 normal vim
 normal Xresources
+normal xmobarrc
+normal stalonetrayrc
 
 move_link .vim/vimrc .vimrc
 

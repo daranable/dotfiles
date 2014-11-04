@@ -2,12 +2,16 @@
 
 import XMonad
 import XMonad.Actions.NoBorders
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.NoBorders
+import XMonad.Util.Run(spawnPipe)
 
 import Control.Monad
 import System.Directory
 import System.Exit
+import System.IO
 import System.Posix.IO
 import System.Posix.Process
 import System.Posix.Signals
@@ -49,7 +53,7 @@ myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,  xK_Return   ), mySpawn' $ terminal conf)
     , ((modMask              ,  xK_Return   ), mySpawn' "gmrun")
-    , ((mod4Mask,               xK_l        ), mySpawn' "slock")
+    , ((mod4Mask,               xK_l        ), mySpawn "xscreensaver-command" ["-lock"])
 
     , ((modMask,                xK_space    ), sendMessage NextLayout)
     , ((modMask .|. shiftMask,  xK_space    ), setLayout $ layoutHook conf)
@@ -75,6 +79,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     , ((modMask,                xK_g        ), withFocused $ toggleBorder)
 
+    , ((modMask,                xK_b        ), sendMessage ToggleStruts)
+
     , ((modMask .|. shiftMask,  xK_q        ), io exitSuccess)
     , ((modMask,                xK_q        ), spawn (
         "if type xmonad; then xmonad --recompile && xmonad --restart;"
@@ -89,9 +95,18 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
-main = xmonad $ defaultConfig
-    { terminal = "xterm"
-    , workspaces = map show [1 .. 12 :: Int]
-    , keys = myKeys
-    , layoutHook = smartBorders $ layoutHook defaultConfig
-    }
+main = do
+    xmproc <- spawnPipe "xmobar"
+
+    xmonad $ defaultConfig
+        { terminal = "xterm"
+        , workspaces = map show [1 .. 12 :: Int]
+        , keys = myKeys
+        , manageHook = manageDocks <+> manageHook defaultConfig
+        , layoutHook = avoidStruts $ smartBorders $ layoutHook defaultConfig
+        , handleEventHook = docksEventHook <+> handleEventHook defaultConfig
+        , logHook = dynamicLogWithPP xmobarPP
+            { ppOutput = hPutStrLn xmproc
+            , ppTitle  = xmobarColor "green" "" . shorten 50
+            }
+        }
