@@ -1,16 +1,24 @@
-Config { font = "xft:Meslo LG S-10"
+Config
+    { font = "xft:Meslo LG S-10"
     , border = NoBorder
     , bgColor = "black"
     , fgColor = "grey"
     , position = TopP 100 0
-    , commands = [
-          Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
-        , Run Memory ["-t","Mem: <usedratio>%"] 10
-        , Run Swap [] 10
+    , commands =
+        [ Run BatteryP [ "BAT0" ]
+            [ "-t", "Bat: <left>% <acstatus>", "-m", "3"
+            , "--", "-f", "ADP1/online", "-i", "Idle"
+            ] 10
+        , Run Cpu
+            [ "-m", "3", "-t", "CPU: <total>%"
+            , "-L", "3", "-H", "50", "-n", "green", "-h", "red"
+            ] 10
+        , Run Memory ["-m", "3", "-t","Mem: <usedratio>%"] 10
+        , Run Swap ["-m", "3"] 10
         , Run Date "%_d %a %H:%M:%S" "date" 10
         , Run StdinReader
         ]
     , sepChar = "%"
     , alignSep = "}{"
-    , template = "%StdinReader%}{%cpu% %memory% %swap% <fc=#ee9a00>%date%</fc>"
+    , template = "%StdinReader%}{%cpu% | %memory% | %swap% | %battery% <fc=#ee9a00>%date%</fc>"
     }
