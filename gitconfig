@@ -1,0 +1,7 @@
+[user]
+	name = Sam Hanes
+	email = sam@maltera.com
+[core]
+	excludesfile = ~/.gitignore
+[push]
+	default = upstream

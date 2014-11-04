@@ -23,6 +23,8 @@ normal bash_logout
 normal bashrc
 normal hgignore
 normal hgrc
+normal gitconfig
+normal gitignore
 normal profile
 normal vim
 normal Xresources
