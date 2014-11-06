@@ -68,9 +68,12 @@ XTerm*vt100.faceName: Meslo LG S for Powerline,\
     Menlo,Meslo LG S,:spacing=mono:scalable=true
 XTerm*vt100.faceSize: 9
 
-! use bold fonts in favor of color brightening
+! use color brightening instead of bold fonts
+! this is necessary to make Solarized work, at least
+! for programs that do not support true 16 color mode
+XTerm*vt100.allowBoldFonts: false
 XTerm*vt100.boldMode: false
-XTerm*vt100.boldColors: false
+XTerm*vt100.boldColors: true
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Bindings

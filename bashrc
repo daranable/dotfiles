@@ -45,7 +45,7 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 
         for token in "$@"; do
             case "$token" in
-                bold)       _escape+=( '01' );;
+                bright)     _escape+=( '01' );;
 
                 black)      _escape+=( "${_base}0" );;
                 red)        _escape+=( "${_base}1" );;
@@ -87,15 +87,15 @@ function _bashrc_prompt {
     }
 
     if [[ 0 -eq $UID ]]; then
-        color bold red
+        color red
         write "\h "
     else
-        color bold green
+        color green
         write "\u@\h "
     fi
 
     if [[ -n "$debian_chroot" ]]; then
-        color bold yellow
+        color yellow
         write "($debian_chroot) "
     fi
 
@@ -108,11 +108,11 @@ function _bashrc_prompt {
             fi
         fi
 
-        color bold yellow
+        color yellow
         write "$venv_name "
     fi
 
-    color bold blue
+    color blue
     write '\$'
     color reset
     write ' '

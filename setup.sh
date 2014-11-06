@@ -15,12 +15,13 @@ normal () {
 }
 
 special () {
-    move_link ".files/$1" "$2"
+    move_link "$1" "$2"
 }
 
 
 normal bash_logout
 normal bashrc
+normal dircolors
 normal hgignore
 normal hgrc
 normal gitconfig
@@ -34,4 +35,4 @@ normal stalonetrayrc
 move_link .vim/vimrc .vimrc
 
 mkdir -p .xmonad
-special xmonad.hs .xmonad/xmonad.hs
+special ../.files/xmonad.hs .xmonad/xmonad.hs
