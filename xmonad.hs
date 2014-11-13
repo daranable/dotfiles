@@ -12,6 +12,7 @@ import Control.Monad
 import System.Directory
 import System.Exit
 import System.IO
+import System.Posix.Env (setEnv)
 import System.Posix.IO
 import System.Posix.Process
 import System.Posix.Signals
@@ -38,6 +39,7 @@ mySpawn exe args = io $ void $ forkProcess $ doFork
 
     doExec = do
       getHomeDirectory >>= setCurrentDirectory
+      setEnv "_JAVA_AWT_WM_NONREPARENTING" "1" True
       reopenStreams
       executeFile exe True args Nothing
 
