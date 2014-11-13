@@ -20,3 +20,24 @@ export EDITOR=$(which vim 2>&-)
 
 export DEBFULLNAME="Sam Hanes"
 export DEBEMAIL="sam@maltera.com"
+
+
+#######################################################################
+# Java Runtime Options                                                #
+#######################################################################
+declare -a opts
+
+# use proper anti-aliased fonts
+opts+=(
+	'-Dawt.useSystemAAFontSettings=on'
+	'-Dswing.aatext=true'
+)
+
+# use the GTK look and feel for Swing
+opts+=(
+	'-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
+	'-Dswing.crossplatformlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
+)
+
+export JAVA_TOOL_OPTIONS="${opts[*]}"
+unset opts
