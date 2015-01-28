@@ -25,11 +25,12 @@ local menubar    = require( "menubar" );
 local config_dir = awful.util.getdir( "config" );
 local theme_file = config_dir .. "/themes/awesome-solarized/dark/theme.lua";
 
-local browser    = "firefox";
-local mail       = "thunderbird";
-local terminal   = "xterm";
-local editor     = os.getenv( "EDITOR" ) or "vim";
-local editor_cmd = terminal .. " -e " .. editor;
+local browser     = "firefox";
+local mail        = "thunderbird";
+local terminal    = "xterm";
+local screen_lock = "slock";
+local editor      = os.getenv( "EDITOR" ) or "vim";
+local editor_cmd  = terminal .. " -e " .. editor;
 
 -- Set the modkey for awesome
 local modkey = "Mod1";
@@ -215,6 +216,10 @@ local globalkeys = awful.util.table.join(
 
     awful.key( { modkey, "Shift"    }, "Return", function()
         awful.util.spawn( terminal );
+    end ),
+
+    awful.key( { 'Mod4',            }, "l", function()
+        awful.util.spawn( screen_lock );
     end )
 );
 
@@ -283,13 +288,11 @@ for index = 1, tag_count do
 
             -- Swap the tag's screen, hide them first to limit reflows.
 
-            target_tag.selected = false;
             moused_tag.selected = false;
 
             awful.tag.setscreen( target_tag, mouse_screen );
             awful.tag.setscreen( moused_tag, targeted_tag_screen );
 
-            target_tag.selected = true;
             moused_tag.selected = true;
 
             return;
