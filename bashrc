@@ -8,9 +8,6 @@ case $- in
       *) return;;
 esac
 
-# detect Max OS X
-have_osx=$([[ "$(uname -s)" == "Darwin" ]])
-
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -150,7 +147,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-if $have_osx; then
+if [[ $OSTYPE == darwin* ]]; then
     alias ls='ls -AlhG'
     alias psf='ps -Af'
 else
