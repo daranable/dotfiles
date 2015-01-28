@@ -57,9 +57,9 @@ theme.border_marked = theme.bg_focus;
 -- Error Handling                                                            --
 -------------------------------------------------------------------------------
 
--- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
+
 if awesome.startup_errors then
     naughty.notify({ preset = naughty.config.presets.critical,
                      title = "Oops, there were errors during startup!",
@@ -80,25 +80,6 @@ do
         in_error = false
     end)
 end
--- }}}
-
--------------------------------------------------------------------------------
--- Bug Fix                                                                   --
--------------------------------------------------------------------------------
-
---local setscreen = awful.tag.setscreen;
-
---awful.tag.setscreen = function( tag, target_screen )
---    if not tag or type(tag) ~= "tag" then return end
---    setscreen( tag, target_screen );
---    
---    for _, client in ipairs( tag:clients() ) do
---        -- Move all client's screen's
---        client.screen = target_screen or 1;
---        -- Fix some strange side effects
---        client:tags( {tag} );
---    end
---end
 
 -------------------------------------------------------------------------------
 -- Tag Creation                                                              --
@@ -112,15 +93,15 @@ end
 
 local tags = { };
 -- How many default tags we want. {Default 10}
-local tag_count = 10;
+local tag_count = 20;
+local tag_properties = {
+    screen = 1,
+    layout = default_layout
+};
 
-tags = { unpack( 
-    awful.tag( 
-        { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
-        1, 
-        awful.layout.suit.tile 
-    )
-) };
+for index = 1, tag_count do
+    table.insert( tags, awful.tag.add( '' .. index, tag_properties ) );
+end
 
 for s=1, screen.count() do
     -- On start, set one of the first tags to each screen.
@@ -269,14 +250,19 @@ local clientkeys = awful.util.table.join(
 
 for index = 1, tag_count do
     local key;
+    local submod = '';
     -- If this is index 10 bind the key to 0
-    if index == 10 then 
+    if index % 10 == 0 then 
         key = 0;
     else
-        key = index
+        key = index % 10;
+    end
+
+    if index > 10 then
+        submod = 'Control';
     end
     globalkeys = awful.util.table.join( globalkeys,
-    awful.key( { modkey }, key,  function()
+    awful.key( { modkey, submod }, key,  function()
         -- Get the target screen and the tag that is currently on that screen.
         local mouse_screen = mouse.screen;
         local moused_tag = awful.tag.selected( mouse_screen );
