@@ -45,6 +45,14 @@ local default_layout = awful.layout.suit.tile;
 -- Initialize the theme
 beautiful.init( theme_file );
 
+-- Customize the theme, as the default is not what we want.
+local theme = beautiful.get();
+
+theme.border_width  = "1";
+theme.border_normal = theme.bg_focus;
+theme.border_focus  = theme.colors.red;
+theme.border_marked = theme.bg_focus;
+
 -------------------------------------------------------------------------------
 -- Error Handling                                                            --
 -------------------------------------------------------------------------------
