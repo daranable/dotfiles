@@ -77,19 +77,19 @@ end
 -- Bug Fix                                                                   --
 -------------------------------------------------------------------------------
 
-local setscreen = awful.tag.setscreen;
+--local setscreen = awful.tag.setscreen;
 
-awful.tag.setscreen = function( tag, target_screen )
-    if not tag or type(tag) ~= "tag" then return end
-    setscreen( tag, target_screen );
-    
-    for _, client in ipairs( tag:clients() ) do
-        -- Move all client's screen's
-        client.screen = target_screen or 1;
-        -- Fix some strange side effects
-        client:tags( {tag} );
-    end
-end
+--awful.tag.setscreen = function( tag, target_screen )
+--    if not tag or type(tag) ~= "tag" then return end
+--    setscreen( tag, target_screen );
+--    
+--    for _, client in ipairs( tag:clients() ) do
+--        -- Move all client's screen's
+--        client.screen = target_screen or 1;
+--        -- Fix some strange side effects
+--        client:tags( {tag} );
+--    end
+--end
 
 -------------------------------------------------------------------------------
 -- Tag Creation                                                              --
@@ -254,12 +254,6 @@ local clientkeys = awful.util.table.join(
 -- Tag Control                                                               --
 -------------------------------------------------------------------------------
 
-function tag_is_visible( tag )
-    for s = 1, screen.count() do
-        if awful.tag.selected( s ) == tag then return true; end
-    end
-end
-
 for index = 1, tag_count do
     local key;
     -- If this is index 10 bind the key to 0
@@ -269,27 +263,49 @@ for index = 1, tag_count do
         key = index
     end
     globalkeys = awful.util.table.join( globalkeys,
-        awful.key( { modkey }, key, function ()
-            -- Swap tags
-            local curscreen = mouse.screen;
-            local curtag = awful.tag.selected( curscreen );
-            local tag = tags[ index ];
-            
-            if curtag == tag then return end
-            
-            --awful.tag.viewnone( curscreen );
+    awful.key( { modkey }, key,  function()
+        -- Get the target screen and the tag that is currently on that screen.
+        local mouse_screen = mouse.screen;
+        local moused_tag = awful.tag.selected( mouse_screen );
 
-            if tag_is_visible( tag ) then
-                local oldscreen = awful.tag.getscreen( tag );
+        -- Get the target tag from our safe list of tags.
+        local target_tag = tags[ index ];
 
-                awful.tag.setscreen( curtag, oldscreen );
-                awful.tag.setscreen( tag, curscreen );
-            else
-                awful.tag.setscreen( tag, curscreen );
-            end
+        -- Short circuit if there is no work to do.
+        if moused_tag == target_tag then
+            -- we run view only for occasional display issues.
+            awful.tag.viewonly( target_tag );
+            return; 
+        end
 
-            awful.tag.viewonly( tag );
-        end ),
+        if target_tag.selected then
+            local targeted_tag_screen = awful.tag.getscreen( target_tag );
+
+            -- Swap the tag's screen, hide them first to limit reflows.
+
+            target_tag.selected = false;
+            moused_tag.selected = false;
+
+            awful.tag.setscreen( target_tag, mouse_screen );
+            awful.tag.setscreen( moused_tag, targeted_tag_screen );
+
+            target_tag.selected = true;
+            moused_tag.selected = true;
+
+            return;
+        end
+
+        -- The target tag is not selected now.
+
+        -- If there is a current tag on the screen hide it.
+        if moused_tag then
+            moused_tag.selected = false;
+        end
+
+        -- Move the target tag to the mouse's screen then make it visible.
+        awful.tag.setscreen( target_tag, mouse_screen );
+        target_tag.selected = true;
+    end),
         awful.key( { modkey, "Shift" }, key, function ()
             local tag = tags[ index ];
             if client.focus and tag then
