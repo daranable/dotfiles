@@ -1,6 +1,11 @@
 # ~/.profile: executed by the command interpreter for login shells.
 # vim:ft=sh:ts=4:sw=4:noet:
 
+# on OS X, load Homebrew GNU bin dirs
+for dir in $(find /usr/local/Cellar \( -type d -a -name gnubin \)); do
+	PATH="$dir:$PATH"
+done
+
 # if this is an interactive bash, load .bashrc
 if [[ -n "$BASH" && "$-" == *i* ]]; then
 	source $HOME/.bashrc

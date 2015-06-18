@@ -66,7 +66,7 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
         done
 
         local IFS=";${IFS}"
-        echo -en "\e[${_escape[*]}m"
+        echo -en "\003[${_escape[*]}m"
     }
 else
     function _bashrc_color { echo -n ""; }
