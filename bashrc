@@ -123,6 +123,33 @@ function _bashrc_prompt {
 PROMPT_COMMAND="_bashrc_prompt"
 $PROMPT_COMMAND
 
+# for the linux console, initialize the color palette
+# this is the Solarized Dark color scheme
+if [[ $TERM == "linux" ]]; then
+    echo -en "\e]R"         # reset palette
+    echo -en "\e]P0073642"  # set black         base02
+    echo -en "\e]P1DC322F"  # set red           red
+    echo -en "\e]P2859900"  # set green         green
+    echo -en "\e]P3B58900"  # set yellow        yellow
+    echo -en "\e]P4268BD2"  # set blue          blue
+    echo -en "\e]P5D33682"  # set magenta       magenta
+    echo -en "\e]P62AA198"  # set cyan          cyan
+    echo -en "\e]P7EEE8D5"  # set white         base2
+    echo -en "\e]P8002B36"  # set br black      base03
+    echo -en "\e]P9CB4B16"  # set br red        orange
+    echo -en "\e]PA586E75"  # set br green      base01
+    echo -en "\e]PB657B83"  # set br yellow     base00
+    echo -en "\e]PC839496"  # set br blue       base0
+    echo -en "\e]PD6C71C4"  # set br magenta    violet
+    echo -en "\e]PE93A1A1"  # set br cyan       base1
+    echo -en "\e]PFFDF6E3"  # set br white      base3
+
+    echo -en "\e[00m\e[100;94m\e[8]"
+
+    # clear to the new background color so there aren't artifacts
+    [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
+fi
+
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
