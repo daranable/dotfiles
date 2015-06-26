@@ -5,3 +5,11 @@
 	excludesfile = ~/.gitignore
 [push]
 	default = upstream
+[hub]
+    host = git.dev.whs
+
+[alias]
+    pr = "! git fetch $1 +refs/pull/$2/head:refs/remotes/$1/pr/$2 && git checkout -B l-pr-$2 $1/pr/$2 #"
+    unpr = "! git branch -Dr $1/pr/$2 && git branch -D l-pr-$2 #"
+    bdiff = "! remote=$1; local=$2; shift; shift; git diff `git merge-base $remote $local` $local"
+    shorthash = rev-list -n 1 --abbrev=12 --abbrev-commit
