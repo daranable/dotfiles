@@ -207,4 +207,11 @@ if ! shopt -oq posix; then
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
   fi
+
+  # support for Homebrew
+  if [ -d /usr/local/etc/bash_completion.d ]; then
+    for file in /usr/local/etc/bash_completion.d/*; do
+      . "$file"
+    done
+  fi
 fi
