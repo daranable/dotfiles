@@ -189,6 +189,13 @@ if [ -f "$HOME/.rvm/scripts/rvm" ]; then
     . "$HOME/.rvm/scripts/rvm"
 fi
 
+# load NVM interactive mode if it's installed
+if [ -d "$HOME/.nvm" ]; then
+    export NVM_DIR="$HOME/.nvm"
+    . "$NVM_DIR/nvm.sh"
+    . "$NVM_DIR/bash_completion"
+fi
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -215,3 +222,4 @@ if ! shopt -oq posix; then
     done
   fi
 fi
+
