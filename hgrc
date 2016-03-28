@@ -7,9 +7,14 @@ ignore = ~/.hgignore
 [aliases]
 revert = revert --no-backup $@
 
+[pager]
+pager = LESS='FRX' less
+
 [extensions]
 color =
 purge =
-rebase = 
+rebase =
 shelve =
 strip =
+progress =
+pager =
