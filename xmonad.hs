@@ -97,6 +97,16 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
+isChrome =
+       className =? "Chromium-browser"
+  <||> className =? "chromium-browser"
+  <||> className =? "google-chrome"
+
+myManageHook = composeAll
+  [ isChrome <&&> title =? "Authy" --> doFloat
+  , manageDocks
+  ]
+
 main = do
     xmproc <- spawnPipe "xmobar"
 
@@ -104,7 +114,7 @@ main = do
         { terminal = "xterm"
         , workspaces = map show [1 .. 12 :: Int]
         , keys = myKeys
-        , manageHook = manageDocks <+> manageHook defaultConfig
+        , manageHook = myManageHook <+> manageHook defaultConfig
         , layoutHook = avoidStruts $ smartBorders $ layoutHook defaultConfig
         , handleEventHook = docksEventHook <+> handleEventHook defaultConfig
         , logHook = dynamicLogWithPP xmobarPP
