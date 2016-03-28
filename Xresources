@@ -97,7 +97,7 @@ XTerm*vt100.color4:     S_blue
 XTerm*vt100.color5:     S_magenta
 XTerm*vt100.color6:     S_cyan
 XTerm*vt100.color7:     S_base2
-XTerm*vt100.color8:     S_base03
+XTerm*vt100.color8:     S_base01
 XTerm*vt100.color9:     S_orange
 XTerm*vt100.color10:    S_base01
 XTerm*vt100.color11:    S_base00

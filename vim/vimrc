@@ -75,5 +75,9 @@ syntax enable
 if &term != "linux"
     " use Solarized Dark colors
     set background=dark
+
+    " force Solarized.vim to use the default terminal background
+    " color for base03 instead of brtblack as that's remapped to base01
+    let g:solarized_termtrans=1
     colorscheme solarized
 endif
