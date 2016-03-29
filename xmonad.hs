@@ -103,7 +103,8 @@ isChrome =
   <||> className =? "google-chrome"
 
 myManageHook = composeAll
-  [ isChrome <&&> title =? "Authy" --> doFloat
+  [ isDialog --> doFloat
+  , isChrome <&&> title =? "Authy" --> doFloat
   , manageDocks
   ]
 
