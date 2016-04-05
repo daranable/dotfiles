@@ -100,6 +100,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 isChrome =
        className =? "Chromium-browser"
   <||> className =? "chromium-browser"
+  <||> className =? "chromium"
   <||> className =? "google-chrome"
 
 myManageHook = composeAll
