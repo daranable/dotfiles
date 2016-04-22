@@ -29,6 +29,24 @@ export DEBFULLNAME="Sam Hanes"
 export DEBEMAIL="sam@maltera.com"
 
 
+# if the modern (2.1+) GPG agent is installed, start it
+# and interrogate it to set the legacy environment variables
+if command -v gpg-connect-agent >/dev/null 2>&1; then
+	export $(gpg-connect-agent <<-'END'
+		/subst
+		/serverpid
+		/echo GPG_AGENT_INFO=${get homedir}/S.gpg-agent:${get serverpid}:1
+		/echo SSH_AUTH_SOCK=${get homedir}/S.gpg-agent.ssh
+		/echo SSH_AGENT_PID=${get serverpid}
+		/bye
+		END
+	)
+
+# if we have an environment file from an older GPG agent, use that
+elif [[ -f "$HOME/.gnupg/gpg-agent-info" ]]; then
+	source "$HOME/.gnupg/gpg-agent-info"
+fi
+
 #######################################################################
 # Java Runtime Options                                                #
 #######################################################################

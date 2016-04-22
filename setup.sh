@@ -34,5 +34,9 @@ normal stalonetrayrc
 
 move_link .vim/vimrc .vimrc
 
+mkdir -p .gnupg
+special ../.files/gpg.conf .gnupg/gpg.conf
+special ../.files/gpg-agent.conf .gnupg/gpg-agent.conf
+
 mkdir -p .xmonad
 special ../.files/xmonad.hs .xmonad/xmonad.hs
