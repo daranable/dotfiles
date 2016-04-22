@@ -8,6 +8,13 @@ case $- in
       *) return;;
 esac
 
+# source the profile if we haven't already
+if [[ -f "$HOME/.profile" && -z "$have_run_profile" ]]; then
+    running_bashrc=yes
+    source "$HOME/.profile"
+    unset running_bashrc
+fi
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth

@@ -1,6 +1,9 @@
 # ~/.profile: executed by the command interpreter for login shells.
 # vim:ft=sh:ts=4:sw=4:noet:
 
+# this is used by .bashrc
+export have_run_profile=yes
+
 # on OS X, load Homebrew GNU bin dirs
 if [[ -d /usr/local/Cellar ]]; then
 	for dir in $(find /usr/local/Cellar \( -type d -a -name gnubin \)); do
@@ -9,7 +12,8 @@ if [[ -d /usr/local/Cellar ]]; then
 fi
 
 # if this is an interactive bash, load .bashrc
-if [[ -n "$BASH" && "$-" == *i* ]]; then
+# unless we're being called from .bashrc
+if [[ -n "$BASH" && "$-" == *i* && -z "$running_bashrc" ]]; then
 	source $HOME/.bashrc
 fi
 
