@@ -2,6 +2,7 @@
 
 import XMonad
 import XMonad.Actions.NoBorders
+import XMonad.Actions.Warp
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -51,6 +52,22 @@ mySpawn exe args = io $ void $ forkProcess $ doFork
 mySpawn' :: MonadIO m => FilePath -> m ()
 mySpawn' x = mySpawn x []
 
+fraction :: (Integral a, Integral b) => Rational -> a -> b
+fraction f x = floor (f * fromIntegral x)
+
+moveWindowToPointer :: Rational -> Rational -> X ()
+moveWindowToPointer h v =
+  withDisplay $ \d ->
+    withFocused $ \w -> do
+      io $ raiseWindow d w
+      wa <- io $ getWindowAttributes d w
+      (_, _, _, px', py', _, _, _) <- io $ queryPointer d w
+      let px = fromIntegral px'
+          py = fromIntegral py'
+      io $ moveWindow d w (px - fraction h (wa_width wa))
+                          (py - fraction v (wa_height wa))
+      float w
+
 myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,  xK_Return   ), mySpawn' $ terminal conf)
@@ -80,6 +97,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 --    , ((modMask .|. shiftMask,  xK_t        ), withFocused $ windows . W.float)
 
     , ((modMask,                xK_g        ), withFocused $ toggleBorder)
+
+    , ((modMask,                xK_d        ), moveWindowToPointer 0.5 0.5)
 
     , ((modMask,                xK_b        ), sendMessage ToggleStruts)
 
