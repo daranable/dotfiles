@@ -10,8 +10,12 @@ Config
             , "--", "-f", "ADP1/online", "-i", "Idle"
             ] 10
         , Run Cpu
-            [ "-m", "3", "-t", "CPU: <total>%"
+            [ "-m", "3", "-t", "<total>%"
             , "-L", "3", "-H", "50", "-n", "green", "-h", "red"
+            ] 10
+        , Run CoreTemp
+            [ "-t", "<core0>°"
+            , "-L", "50", "-H", "70", "-n", "green", "-h", "red"
             ] 10
         , Run Memory ["-m", "3", "-t","Mem: <usedratio>%"] 10
         , Run Swap ["-m", "3"] 10
@@ -20,5 +24,5 @@ Config
         ]
     , sepChar = "%"
     , alignSep = "}{"
-    , template = "%StdinReader%}{%cpu% | %memory% | %swap% | %battery% <fc=#ee9a00>%date%</fc>"
+    , template = "%StdinReader%}{CPU: %cpu% %coretemp% | %memory% | %swap% | %battery% <fc=#ee9a00>%date%</fc>"
     }
