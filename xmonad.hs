@@ -8,7 +8,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
-import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.Run (spawnPipe, safeSpawn, safeSpawnProg)
 
 import Control.Monad
 import System.Directory
@@ -118,7 +118,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
-
 isChrome =
        className =? "Chromium-browser"
   <||> className =? "chromium-browser"
@@ -160,11 +159,24 @@ setFullscreenSupported = withDisplay $ \d -> do
   v <- getAtom "_NET_WM_STATE_FULLSCREEN"
   io $ changeProperty32 d r a c propModeAppend [fromIntegral v]
 
+
+
+startup :: X()
+startup = do
+    safeSpawn "trayer"
+        [ "--edge", "top", "--align", "left"
+        , "--widthtype", "request"
+        , "--heighttype", "pixel", "--height", "32"
+        , "--transparent", "true", "--alpha", "255"
+        ]
+
+    safeSpawnProg "nm-applet"
+
 myStartupHook :: X ()
 myStartupHook = composeAll
   [ setFullscreenSupported
+  , startup
   ]
-
 
 
 main = do
