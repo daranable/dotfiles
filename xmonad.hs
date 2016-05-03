@@ -126,9 +126,10 @@ isChrome =
   <||> className =? "google-chrome"
 
 myManageHook = composeAll
-  [ isDialog --> doFloat
+  [ isDialog --> doCenterFloat
   , isChrome <&&> title =? "Authy" --> doFloat
   , className =? "mpv" --> doFloat
+  , className =? "Gimp" --> doFloat
   , manageDocks
   , fullscreenManageHook
   ]
