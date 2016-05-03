@@ -6,6 +6,7 @@ import XMonad.Actions.Warp
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
 import XMonad.Util.Run(spawnPipe)
 
@@ -116,6 +117,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
+
+
 isChrome =
        className =? "Chromium-browser"
   <||> className =? "chromium-browser"
@@ -125,8 +128,43 @@ isChrome =
 myManageHook = composeAll
   [ isDialog --> doFloat
   , isChrome <&&> title =? "Authy" --> doFloat
+  , className =? "mpv" --> doFloat
   , manageDocks
+  , fullscreenManageHook
   ]
+
+
+
+myEventHook = composeAll
+  [ fullscreenEventHook
+  , docksEventHook
+  ]
+
+
+
+myLayoutHook =
+  avoidStruts $
+  smartBorders $
+  fullscreenFull $
+  fullscreenFloat $
+  layoutHook defaultConfig
+
+
+
+setFullscreenSupported :: X()
+setFullscreenSupported = withDisplay $ \d -> do
+  r <- asks theRoot
+  a <- getAtom "_NET_SUPPORTED"
+  c <- getAtom "ATOM"
+  v <- getAtom "_NET_WM_STATE_FULLSCREEN"
+  io $ changeProperty32 d r a c propModeAppend [fromIntegral v]
+
+myStartupHook :: X ()
+myStartupHook = composeAll
+  [ setFullscreenSupported
+  ]
+
+
 
 main = do
     xmproc <- spawnPipe "xmobar"
@@ -135,9 +173,10 @@ main = do
         { terminal = "xterm"
         , workspaces = map show [1 .. 12 :: Int]
         , keys = myKeys
-        , manageHook = myManageHook <+> manageHook defaultConfig
-        , layoutHook = avoidStruts $ smartBorders $ layoutHook defaultConfig
-        , handleEventHook = docksEventHook <+> handleEventHook defaultConfig
+        , manageHook = myManageHook
+        , layoutHook = myLayoutHook
+        , handleEventHook = myEventHook
+        , startupHook = myStartupHook
         , logHook = dynamicLogWithPP xmobarPP
             { ppOutput = hPutStrLn xmproc
             , ppTitle  = xmobarColor "green" "" . shorten 50
