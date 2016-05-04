@@ -36,7 +36,7 @@ export DEBEMAIL="sam@maltera.com"
 # if the modern (2.1+) GPG agent is installed, start it
 # and interrogate it to set the legacy environment variables
 if command -v gpg-connect-agent >/dev/null 2>&1; then
-	export $(gpg-connect-agent <<-'END'
+	export $(gpg-connect-agent 2>/dev/null <<-'END'
 		/subst
 		/serverpid
 		/echo GPG_AGENT_INFO=${get homedir}/S.gpg-agent:${get serverpid}:1
