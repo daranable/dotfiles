@@ -31,3 +31,6 @@
 [submodule "vim/bundle/twig"]
 	path = vim/bundle/twig
 	url = git://github.com/evidens/vim-twig.git
+[submodule "vim/bundle/vim-twig"]
+	path = vim/bundle/vim-twig
+	url = git://github.com/lumiliet/vim-twig.git
