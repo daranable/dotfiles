@@ -36,15 +36,32 @@ export DEBEMAIL="sam@maltera.com"
 # if the modern (2.1+) GPG agent is installed, start it
 # and interrogate it to set the legacy environment variables
 if command -v gpg-connect-agent >/dev/null 2>&1; then
-	export $(gpg-connect-agent 2>/dev/null <<-'END'
-		/subst
-		/serverpid
-		/echo GPG_AGENT_INFO=${get homedir}/S.gpg-agent:${get serverpid}:1
-		/echo SSH_AUTH_SOCK=${get homedir}/S.gpg-agent.ssh
-		/echo SSH_AGENT_PID=${get serverpid}
+	export $(gpg-connect-agent 2>/dev/null <<-'END' \
+			| awk 'RS=""; { if ($4 == "OK") print $1 "=" $3; }'
+		/echo
+		/echo GPG_AGENT_PID
+		getinfo pid
+
+		/echo
+		/echo GPG_AGENT_SOCK
+		getinfo socket_name
+
+		/echo
+		/echo GPG_AGENT_SSH_SOCK
+		getinfo ssh_socket_name
+
 		/bye
 		END
 	)
+
+	if [[ -S $GPG_AGENT_SOCK ]]; then
+		export GPG_AGENT_INFO="$GPG_AGENT_SOCK:$GPG_AGENT_PID:1"
+	fi
+
+	if [[ -S $GPG_AGENT_SSH_SOCK ]]; then
+		export SSH_AUTH_SOCK="$GPG_AGENT_SSH_SOCK"
+		export SSH_AGENT_PID="$GPG_AGENT_PID"
+	fi
 
 # if we have an environment file from an older GPG agent, use that
 elif [[ -f "$HOME/.gnupg/gpg-agent-info" ]]; then
