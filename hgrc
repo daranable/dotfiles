@@ -3,6 +3,7 @@
 [ui]
 username = Sam Hanes <sam@maltera.com>
 ignore = ~/.hgignore
+merge = internal:merge3
 
 [aliases]
 revert = revert --no-backup $@
