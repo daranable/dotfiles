@@ -161,22 +161,19 @@ setFullscreenSupported = withDisplay $ \d -> do
 
 
 
-startup :: X()
-startup = do
+myStartupHook :: X()
+myStartupHook = do
     safeSpawn "trayer"
         [ "--edge", "top", "--align", "left"
+        , "--monitor", "primary"
         , "--widthtype", "request"
-        , "--heighttype", "pixel", "--height", "32"
+        , "--heighttype", "pixel", "--height", "24"
         , "--transparent", "true", "--alpha", "255"
         ]
 
     safeSpawnProg "nm-applet"
 
-myStartupHook :: X ()
-myStartupHook = composeAll
-  [ setFullscreenSupported
-  , startup
-  ]
+    setFullscreenSupported
 
 
 main = do
