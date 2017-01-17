@@ -122,6 +122,7 @@ isChrome =
        className =? "Chromium-browser"
   <||> className =? "chromium-browser"
   <||> className =? "chromium"
+  <||> className =? "Google-chrome"
   <||> className =? "google-chrome"
 
 myManageHook = composeAll
