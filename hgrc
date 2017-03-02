@@ -15,6 +15,11 @@ noprefix = True
 
 [pager]
 pager = LESS='FRX' less
+attend-help = True
+attend-incoming = True
+attend-outgoing = True
+attend-shelve = True
+attend-status = True
 
 [extensions]
 color =
