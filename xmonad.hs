@@ -6,6 +6,7 @@ import XMonad.Actions.Warp
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.Place
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
 import XMonad.Util.Run (spawnPipe, safeSpawn, safeSpawnProg)
@@ -74,6 +75,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,  xK_Return   ), mySpawn' $ terminal conf)
     , ((modMask              ,  xK_Return   ), mySpawn' "gmrun")
     , ((mod4Mask,               xK_l        ), mySpawn "xscreensaver-command" ["-lock"])
+    , ((mod4Mask .|. shiftMask, xK_l        ), mySpawn "sudo" ["systemctl", "suspend"])
 
     , ((modMask,                xK_space    ), sendMessage NextLayout)
     , ((modMask .|. shiftMask,  xK_space    ), setLayout $ layoutHook conf)
@@ -125,11 +127,13 @@ isChrome =
   <||> className =? "Google-chrome"
   <||> className =? "google-chrome"
 
+
 myManageHook = composeAll
   [ isDialog --> doCenterFloat
   , isChrome <&&> title =? "Authy" --> doFloat
   , className =? "mpv" --> doFloat
   , className =? "Gimp" --> doFloat
+  , placeHook( inBounds( underMouse( 0, 0 )))
   , manageDocks
   , fullscreenManageHook
   ]
