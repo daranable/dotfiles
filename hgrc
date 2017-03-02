@@ -8,6 +8,11 @@ merge = internal:merge3
 [aliases]
 revert = revert --no-backup
 
+[diff]
+git = True
+nobinary = True
+noprefix = True
+
 [pager]
 pager = LESS='FRX' less
 
