@@ -6,7 +6,7 @@ ignore = ~/.hgignore
 merge = internal:merge3
 
 [aliases]
-revert = revert --no-backup $@
+revert = revert --no-backup
 
 [pager]
 pager = LESS='FRX' less
