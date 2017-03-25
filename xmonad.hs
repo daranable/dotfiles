@@ -111,9 +111,13 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         ++ " else xmessage xmonad not in \\$PATH: \"$PATH\"; fi"))
     ]
     ++
-    [ ((m .|. modMask, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_9]++[xK_0,xK_minus,xK_equal])
-        , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)] ]
+    [ ((m .|. s .|. modMask, k), windows $ f i)
+        | (i, (k, m)) <- zip (XMonad.workspaces conf) [ (k, m)
+            | m <- [0, controlMask]
+            , k <- ([xK_1 .. xK_9] ++ [xK_0, xK_minus, xK_equal])
+            ]
+        , (f, s) <- [(W.greedyView, 0), (W.shift, shiftMask)]
+        ]
     ++
     [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
@@ -186,7 +190,7 @@ main = do
 
     xmonad $ defaultConfig
         { terminal = "xterm"
-        , workspaces = map show [1 .. 12 :: Int]
+        , workspaces = map show [1 .. 24 :: Int]
         , keys = myKeys
         , manageHook = myManageHook
         , layoutHook = myLayoutHook
