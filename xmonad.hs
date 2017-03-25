@@ -190,7 +190,10 @@ main = do
 
     xmonad $ defaultConfig
         { terminal = "xterm"
-        , workspaces = map show [1 .. 24 :: Int]
+        , workspaces = [ m ++ k
+            | m <- ["", "^"]
+            , k <- (map show [1..9 :: Int]) ++ ["0", "-", "+"]
+            ]
         , keys = myKeys
         , manageHook = myManageHook
         , layoutHook = myLayoutHook
