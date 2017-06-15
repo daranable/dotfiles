@@ -18,7 +18,10 @@ if [[ -n "$BASH" && "$-" == *i* && -z "$running_bashrc" ]]; then
 fi
 
 # add private bin to the PATH if it exists
-if [ -d "$HOME/.bin" ] ; then
+if [ -d "$HOME/.local/bin" ]; then
+	PATH="$HOME/.local/bin:$PATH"
+fi
+if [ -d "$HOME/.bin" ]; then
 	PATH="$HOME/.bin:$PATH"
 fi
 

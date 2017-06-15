@@ -204,6 +204,16 @@ if [ -d "$HOME/.nvm" ]; then
     . "$NVM_DIR/bash_completion"
 fi
 
+
+if [[ -e "$HOME/.local/bin/aur" ]]; then
+    aur () {
+        if "$HOME/.local/bin/aur" "$@"; then
+            cd "$HOME/aur/$1"
+        fi
+    }
+fi
+
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
