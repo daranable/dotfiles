@@ -75,7 +75,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask,  xK_Return   ), mySpawn' $ terminal conf)
     , ((modMask              ,  xK_Return   ), mySpawn' "gmrun")
     , ((mod4Mask,               xK_l        ), mySpawn "xscreensaver-command" ["-lock"])
-    , ((mod4Mask .|. shiftMask, xK_l        ), mySpawn "sudo" ["systemctl", "suspend"])
+    , ((mod4Mask .|. shiftMask, xK_l        ), mySpawn "systemctl" ["suspend"])
 
     , ((modMask,                xK_space    ), sendMessage NextLayout)
     , ((modMask .|. shiftMask,  xK_space    ), setLayout $ layoutHook conf)
