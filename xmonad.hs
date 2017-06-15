@@ -127,6 +127,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 isChrome =
        className =? "Chromium-browser"
   <||> className =? "chromium-browser"
+  <||> className =? "Chromium"
   <||> className =? "chromium"
   <||> className =? "Google-chrome"
   <||> className =? "google-chrome"
