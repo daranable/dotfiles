@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [[ $# -ne 1 ]]; then
+    echo "usage: aur <name>" >&2
+    exit 1
+fi
+
+name=$1
+dir=$HOME/aur/$name
+
+if [[ ! -e "$dir" ]]; then
+    cd "$HOME/aur"
+    git clone "https://aur.archlinux.org/$name.git" "$name"
+else
+    cd "$dir"
+
+    # get the name of the upstream branch
+    upstream=$(git for-each-ref \
+        --format '%(upstream)' \
+        $(git symbolic-ref -q HEAD)
+    )
+
+    # if the upstream is on a remote, fetch it
+    if [[ "$upstream" == "refs/remotes/*" ]]; then
+        git fetch "${${upstream#refs/remotes/}%%/*}"
+    fi
+
+    # show the current branch
+    # and whether it differs from the upstream branch
+    git for-each-ref \
+        --format 'found on %(upstream:short) %(upstream:track)' \
+        $(git symbolic-ref -q HEAD)
+    
+    if ! git diff-index --quiet HEAD; then
+        echo "working copy is changed"
+    fi
+fi
