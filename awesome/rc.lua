@@ -70,6 +70,27 @@ awful.layout.layouts = {
     -- awful.layout.suit.corner.sw,
     -- awful.layout.suit.corner.se,
 }
+
+
+
+-- the names of the 24 tags
+-- these match the keys used to activate them
+local tagNames = {
+    "1", "2", "3", "4", "5", "6",
+    "7", "8", "9", "0", "-", "+",
+    "^1", "^2", "^3", "^4", "^5", "^6",
+    "^7", "^8", "^9", "^0", "^-", "^+"
+}
+
+-- the 12 keycodes used to activate tags
+-- these are combined with Ctrl for the second set of 12 tags
+local tagKeys = {
+    "#10", "#11", "#12", "#13", "#14", "#15",
+    "#16", "#17", "#18", "#19", "#20", "#21"
+}
+
+
+
 -- }}}
 
 -- {{{ Helper functions
@@ -141,7 +162,7 @@ local tasklist_buttons = gears.table.join(
 
 awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
-    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    awful.tag(tagNames, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -329,55 +350,67 @@ clientkeys = gears.table.join(
         {description = "(un)maximize horizontally", group = "client"})
 )
 
--- Bind all key numbers to tags.
--- Be careful: we use keycodes to make it work on any keyboard layout.
--- This should map on the top row of your keyboard, usually 1 to 9.
-for i = 1, 9 do
+
+
+-- map key bindings for tags
+for i, name in ipairs(tagNames) do
+    local key = i > 12 and tagKeys[i - 12] or tagKeys[i]
+    local ctrl = i > 12 and "Control" or nil
+
     globalkeys = gears.table.join(globalkeys,
-        -- View tag only.
-        awful.key({ modkey }, "#" .. i + 9,
-                  function ()
-                        local screen = awful.screen.focused()
-                        local tag = screen.tags[i]
-                        if tag then
-                           tag:view_only()
-                        end
-                  end,
-                  {description = "view tag #"..i, group = "tag"}),
-        -- Toggle tag display.
-        awful.key({ modkey, "Control" }, "#" .. i + 9,
-                  function ()
-                      local screen = awful.screen.focused()
-                      local tag = screen.tags[i]
-                      if tag then
-                         awful.tag.viewtoggle(tag)
-                      end
-                  end,
-                  {description = "toggle tag #" .. i, group = "tag"}),
-        -- Move client to tag.
-        awful.key({ modkey, "Shift" }, "#" .. i + 9,
-                  function ()
-                      if client.focus then
-                          local tag = client.focus.screen.tags[i]
-                          if tag then
-                              client.focus:move_to_tag(tag)
-                          end
-                     end
-                  end,
-                  {description = "move focused client to tag #"..i, group = "tag"}),
-        -- Toggle tag on focused client.
-        awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
-                  function ()
-                      if client.focus then
-                          local tag = client.focus.screen.tags[i]
-                          if tag then
-                              client.focus:toggle_tag(tag)
-                          end
-                      end
-                  end,
-                  {description = "toggle focused client on tag #" .. i, group = "tag"})
+        -- Super+key: display tag exclusively
+        awful.key({ modkey, ctrl }, key,
+            function ()
+                local screen = awful.screen.focused()
+                local tag = screen.tags[i]
+                if tag then
+                    tag:view_only()
+                end
+            end,
+            {description = "view tag " .. name, group = "tag"}
+        ),
+
+        -- Super+Alt+key: toggle tag display
+        awful.key({ modkey, "Mod1", ctrl }, key,
+            function ()
+                local screen = awful.screen.focused()
+                local tag = screen.tags[i]
+                if tag then
+                    awful.tag.viewtoggle(tag)
+                end
+            end,
+            {description = "toggle tag " .. name, group = "tag"}
+        ),
+
+        -- Super+Shift+key: set tag exclusively on focused client
+        awful.key({ modkey, "Shift", ctrl }, key,
+            function ()
+                if client.focus then
+                    local tag = client.focus.screen.tags[i]
+                    if tag then
+                        client.focus:move_to_tag(tag)
+                    end
+                end
+            end,
+            {description = "move focused client to tag " .. name, group = "tag"}
+        ),
+
+        -- Super+Shift+Alt+key: toggle tag on focused client
+        awful.key({ modkey, "Shift", "Mod1", ctrl }, key,
+            function ()
+                if client.focus then
+                    local tag = client.focus.screen.tags[i]
+                    if tag then
+                        client.focus:toggle_tag(tag)
+                    end
+                end
+            end,
+            {description = "toggle focused client on tag " .. name, group = "tag"}
+        )
     )
 end
+
+
 
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
