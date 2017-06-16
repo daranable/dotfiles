@@ -9,10 +9,7 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
--- Enable VIM help for hotkeys widget when client with matching name is opened:
 require("awful.hotkeys_popup.keys.vim")
-
-
 
 -- Handle runtime errors after startup
 do
@@ -34,8 +31,6 @@ end
 
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(awful.util.get_themes_dir() .. "default/theme.lua")
-
-
 gears.wallpaper.set("solid:black")
 
 
@@ -84,16 +79,69 @@ local tagNames = {
 
 -- the 12 keycodes used to activate tags
 -- these are combined with Ctrl for the second set of 12 tags
-local tagKeys = {
+local tagKeyCodes = {
     "#10", "#11", "#12", "#13", "#14", "#15",
     "#16", "#17", "#18", "#19", "#20", "#21"
 }
 
+-- create tags and set up their key bindings
+local tagKeys = {}
+for index, name in ipairs(tagNames) do
+    local key = index > 12 and tagKeyCodes[index - 12] or tagKeyCodes[index]
+    local ctrl = index > 12 and "Control" or nil
+
+    local tag = awful.tag.add(name, {
+        index  = index,
+        screen = screen.primary,
+        layout = awful.layout.layouts[1],
+        selected = (index == 1)
+    })
+
+    tagKeys = gears.table.join(tagKeys,
+        -- Super+key: display tag exclusively
+        awful.key({ modkey, ctrl }, key,
+            function ()
+                tag.screen = awful.screen.focused()
+                tag:view_only()
+            end,
+            {description = "view tag " .. name, group = "tag"}
+        ),
+
+        -- Super+Alt+key: toggle tag display
+        awful.key({ modkey, "Mod1", ctrl }, key,
+            function ()
+                local screen = awful.screen.focused()
+                local selected = tag.screen ~= screen or not tag.selected
+                tag.screen = screen
+                tag.selected = selected
+            end,
+            {description = "toggle tag " .. name, group = "tag"}
+        ),
+
+        -- Super+Shift+key: set tag exclusively on focused client
+        awful.key({ modkey, "Shift", ctrl }, key,
+            function ()
+                if client.focus then
+                    client.focus:move_to_tag(tag)
+                end
+            end,
+            {description = "move focused client to tag " .. name, group = "tag"}
+        ),
+
+        -- Super+Shift+Alt+key: toggle tag on focused client
+        awful.key({ modkey, "Shift", "Mod1", ctrl }, key,
+            function ()
+                if client.focus then
+                    client.focus:toggle_tag(tag)
+                end
+            end,
+            {description = "toggle focused client on tag " .. name, group = "tag"}
+        )
+    )
+end
 
 
--- }}}
 
--- {{{ Helper functions
 local function client_menu_toggle_fn()
     local instance = nil
 
@@ -106,7 +154,6 @@ local function client_menu_toggle_fn()
         end
     end
 end
--- }}}
 
 
 
@@ -161,9 +208,6 @@ local tasklist_buttons = gears.table.join(
                                           end))
 
 awful.screen.connect_for_each_screen(function(s)
-    -- Each screen has its own tag table.
-    awful.tag(tagNames, s, awful.layout.layouts[1])
-
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
@@ -303,7 +347,9 @@ globalkeys = gears.table.join(
                     history_path = awful.util.get_cache_dir() .. "/history_eval"
                   }
               end,
-              {description = "lua execute prompt", group = "awesome"})
+              {description = "lua execute prompt", group = "awesome"}),
+
+    tagKeys
 )
 
 clientkeys = gears.table.join(
@@ -349,66 +395,6 @@ clientkeys = gears.table.join(
         end ,
         {description = "(un)maximize horizontally", group = "client"})
 )
-
-
-
--- map key bindings for tags
-for i, name in ipairs(tagNames) do
-    local key = i > 12 and tagKeys[i - 12] or tagKeys[i]
-    local ctrl = i > 12 and "Control" or nil
-
-    globalkeys = gears.table.join(globalkeys,
-        -- Super+key: display tag exclusively
-        awful.key({ modkey, ctrl }, key,
-            function ()
-                local screen = awful.screen.focused()
-                local tag = screen.tags[i]
-                if tag then
-                    tag:view_only()
-                end
-            end,
-            {description = "view tag " .. name, group = "tag"}
-        ),
-
-        -- Super+Alt+key: toggle tag display
-        awful.key({ modkey, "Mod1", ctrl }, key,
-            function ()
-                local screen = awful.screen.focused()
-                local tag = screen.tags[i]
-                if tag then
-                    awful.tag.viewtoggle(tag)
-                end
-            end,
-            {description = "toggle tag " .. name, group = "tag"}
-        ),
-
-        -- Super+Shift+key: set tag exclusively on focused client
-        awful.key({ modkey, "Shift", ctrl }, key,
-            function ()
-                if client.focus then
-                    local tag = client.focus.screen.tags[i]
-                    if tag then
-                        client.focus:move_to_tag(tag)
-                    end
-                end
-            end,
-            {description = "move focused client to tag " .. name, group = "tag"}
-        ),
-
-        -- Super+Shift+Alt+key: toggle tag on focused client
-        awful.key({ modkey, "Shift", "Mod1", ctrl }, key,
-            function ()
-                if client.focus then
-                    local tag = client.focus.screen.tags[i]
-                    if tag then
-                        client.focus:toggle_tag(tag)
-                    end
-                end
-            end,
-            {description = "toggle focused client on tag " .. name, group = "tag"}
-        )
-    )
-end
 
 
 
@@ -542,3 +528,4 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+
