@@ -12,14 +12,16 @@ local awesome = {
     tabs = _G.tabs,
 }
 
-local gears = require("gears")
 local awful = require("awful")
-require("awful.autofocus")
-local wibox = require("wibox")
 local beautiful = require("beautiful")
+local gears = require("gears")
+local hotkeys_popup = require("awful.hotkeys_popup.widget")
 local naughty = require("naughty")
-local hotkeys_popup = require("awful.hotkeys_popup").widget
-require("awful.hotkeys_popup.keys.vim")
+local wibox = require("wibox")
+
+require("awful.autofocus")
+
+
 
 -- Handle runtime errors after startup
 do
@@ -38,10 +40,10 @@ end
 
 
 
-
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(awful.util.get_themes_dir() .. "default/theme.lua")
 gears.wallpaper.set("solid:black")
+
 
 
 -- This is used later as the default terminal and editor to run.
