@@ -1,12 +1,22 @@
--- Standard awesome library
+local _G, _ENV = _G, nil
+
+local ipairs = _G.ipairs
+local require = _G.require
+local tostring = _G.tostring
+
+local awesome = {
+    client = _G.client,
+    core = _G.awesome,
+    root = _G.root,
+    screen = _G.screen,
+    tabs = _G.tabs,
+}
+
 local gears = require("gears")
 local awful = require("awful")
 require("awful.autofocus")
--- Widget and layout library
 local wibox = require("wibox")
--- Theme handling library
 local beautiful = require("beautiful")
--- Notification library
 local naughty = require("naughty")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 require("awful.hotkeys_popup.keys.vim")
@@ -14,7 +24,7 @@ require("awful.hotkeys_popup.keys.vim")
 -- Handle runtime errors after startup
 do
     local in_error = false
-    awesome.connect_signal("debug::error", function (err)
+    awesome.core.connect_signal("debug::error", function (err)
         -- Make sure we don't go into an endless error loop
         if in_error then return end
         in_error = true
@@ -35,16 +45,16 @@ gears.wallpaper.set("solid:black")
 
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm"
-editor = os.getenv("EDITOR") or "nano"
-editor_cmd = terminal .. " -e " .. editor
+local terminal = "xterm"
+local editor = "vim"
+local editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
-modkey = "Mod4"
+local modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -92,7 +102,7 @@ for index, name in ipairs(tagNames) do
 
     local tag = awful.tag.add(name, {
         index  = index,
-        screen = screen.primary,
+        screen = awesome.screen.primary,
         layout = awful.layout.layouts[1],
         selected = (index == 1)
     })
@@ -121,8 +131,8 @@ for index, name in ipairs(tagNames) do
         -- Super+Shift+key: set tag exclusively on focused client
         awful.key({ modkey, "Shift", ctrl }, key,
             function ()
-                if client.focus then
-                    client.focus:move_to_tag(tag)
+                if awesome.client.focus then
+                    awesome.client.focus:move_to_tag(tag)
                 end
             end,
             {description = "move focused client to tag " .. name, group = "tag"}
@@ -131,8 +141,8 @@ for index, name in ipairs(tagNames) do
         -- Super+Shift+Alt+key: toggle tag on focused client
         awful.key({ modkey, "Shift", "Mod1", ctrl }, key,
             function ()
-                if client.focus then
-                    client.focus:toggle_tag(tag)
+                if awesome.client.focus then
+                    awesome.client.focus:toggle_tag(tag)
                 end
             end,
             {description = "toggle focused client on tag " .. name, group = "tag"}
@@ -158,23 +168,23 @@ end
 
 
 -- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
+local mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+local mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
                     awful.button({ modkey }, 1, function(t)
-                                              if client.focus then
-                                                  client.focus:move_to_tag(t)
+                                              if awesome.client.focus then
+                                                  awesome.client.focus:move_to_tag(t)
                                               end
                                           end),
                     awful.button({ }, 3, awful.tag.viewtoggle),
                     awful.button({ modkey }, 3, function(t)
-                                              if client.focus then
-                                                  client.focus:toggle_tag(t)
+                                              if awesome.client.focus then
+                                                  awesome.client.focus:toggle_tag(t)
                                               end
                                           end),
                     awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
@@ -183,7 +193,7 @@ local taglist_buttons = gears.table.join(
 
 local tasklist_buttons = gears.table.join(
                      awful.button({ }, 1, function (c)
-                                              if c == client.focus then
+                                              if c == awesome.client.focus then
                                                   c.minimized = true
                                               else
                                                   -- Without this, the following
@@ -194,7 +204,7 @@ local tasklist_buttons = gears.table.join(
                                                   end
                                                   -- This will also un-minimize
                                                   -- the client, if needed
-                                                  client.focus = c
+                                                  awesome.client.focus = c
                                                   c:raise()
                                               end
                                           end),
@@ -247,14 +257,14 @@ end)
 
 
 
-root.keys(gears.table.join(
+awesome.root.keys(gears.table.join(
     awful.key({modkey}, "Escape",
-        awesome.restart,
+        awesome.core.restart,
         {description = "reload awesome", group = "awesome"}
     ),
 
     awful.key({modkey, "Shift"}, "Escape",
-        awesome.quit,
+        awesome.core.quit,
         {description = "quit awesome", group = "awesome"}
     ),
 
@@ -306,8 +316,8 @@ root.keys(gears.table.join(
     awful.key({modkey}, "Tab",
         function()
             awful.client.focus.history.previous()
-            if client.focus then
-                client.focus:raise()
+            if awesome.client.focus then
+                awesome.client.focus:raise()
             end
         end,
         {description = "go back", group = "client"}
@@ -368,7 +378,7 @@ root.keys(gears.table.join(
             local c = awful.client.restore()
             -- Focus restored client
             if c then
-                client.focus = c
+                awesome.client.focus = c
                 c:raise()
             end
         end,
@@ -402,7 +412,7 @@ root.keys(gears.table.join(
     tagKeys
 ))
 
-clientkeys = gears.table.join(
+local clientkeys = gears.table.join(
     awful.key({modkey}, "f",
         function(c)
             c.fullscreen = not c.fullscreen
@@ -462,8 +472,8 @@ clientkeys = gears.table.join(
 
 
 
-clientbuttons = gears.table.join(
-    awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
+local clientbuttons = gears.table.join(
+    awful.button({ }, 1, function (c) awesome.client.focus = c; c:raise() end),
     awful.button({ modkey }, 1, awful.mouse.client.move),
     awful.button({ modkey }, 3, awful.mouse.client.resize))
 
@@ -523,12 +533,12 @@ awful.rules.rules = {
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
-client.connect_signal("manage", function (c)
+awesome.client.connect_signal("manage", function (c)
     -- Set the windows at the slave,
     -- i.e. put it at the end of others instead of setting it master.
     -- if not awesome.startup then awful.client.setslave(c) end
 
-    if awesome.startup and
+    if awesome.core.startup and
       not c.size_hints.user_position
       and not c.size_hints.program_position then
         -- Prevent clients from being unreachable after screen count changes.
@@ -537,16 +547,16 @@ client.connect_signal("manage", function (c)
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
-client.connect_signal("request::titlebars", function(c)
+awesome.client.connect_signal("request::titlebars", function(c)
     -- buttons for the titlebar
     local buttons = gears.table.join(
         awful.button({ }, 1, function()
-            client.focus = c
+            awesome.client.focus = c
             c:raise()
             awful.mouse.client.move(c)
         end),
         awful.button({ }, 3, function()
-            client.focus = c
+            awesome.client.focus = c
             c:raise()
             awful.mouse.client.resize(c)
         end)
@@ -579,14 +589,14 @@ client.connect_signal("request::titlebars", function(c)
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
-client.connect_signal("mouse::enter", function(c)
+awesome.client.connect_signal("mouse::enter", function(c)
     if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
         and awful.client.focus.filter(c) then
-        client.focus = c
+        awesome.client.focus = c
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+awesome.client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+awesome.client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
