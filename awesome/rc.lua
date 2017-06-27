@@ -1,17 +1,6 @@
-local _G, _ENV = _G, nil
+local _ENV = require("stdlib")
 
-local ipairs = _G.ipairs
-local require = _G.require
-local tostring = _G.tostring
-
-local awesome = {
-    client = _G.client,
-    core = _G.awesome,
-    root = _G.root,
-    screen = _G.screen,
-    tabs = _G.tabs,
-}
-
+local awesome = require("awesome")
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
@@ -21,9 +10,7 @@ local wibox = require("wibox")
 
 require("awful.autofocus")
 
-
 local systembar = require("systembar")
-
 
 
 

@@ -1,12 +1,6 @@
-local _G, _ENV = _G, nil
+local _ENV = require("stdlib")
 
-local require = _G.require
-
-local awesome = {
-    client = _G.client,
-    screen = _G.screen,
-}
-
+local awesome = require("awesome")
 local beautiful = require("beautiful")
 local awful = require("awful")
 local gears = require("gears")
