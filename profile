@@ -41,6 +41,8 @@ export DEBEMAIL="sam@maltera.com"
 if command -v gpg-connect-agent >/dev/null 2>&1; then
 	export $(gpg-connect-agent 2>/dev/null <<-'END' \
 			| awk 'RS=""; { if ($4 == "OK") print $1 "=" $3; }'
+		updatestartuptty
+
 		/echo
 		/echo GPG_AGENT_PID
 		getinfo pid

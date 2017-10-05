@@ -38,12 +38,11 @@
 ! #define S_base2 #073642
 ! #define S_base3 #002b36
 
-
 #if X_RESOLUTION >= 7559
 Xft.dpi: 192
-#elif X_RESOLUTION >= 3779
+#elif X_RESOLUTION >= 5669
 Xft.dpi: 144
-#elif X_RESOLUTION >= 4645
+#elif X_RESOLUTION >= 4646
 Xft.dpi: 118
 #else
 Xft.dpi: 96
