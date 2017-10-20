@@ -5,6 +5,7 @@ local beautiful = require("beautiful")
 local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
+local upower = require("upower_widget")
 
 
 
@@ -73,6 +74,8 @@ return function(screen)
                 screen = "primary",
                 { widget = wibox.widget.systray },
             },
+            upower(),
+            --{   widget = upower },
             {   widget = wibox.widget.textclock,
                 format = "%_d %a %H:%M:%S",
                 timeout = 1,

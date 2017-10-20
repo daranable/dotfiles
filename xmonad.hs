@@ -196,6 +196,7 @@ main = do
             | m <- ["", "^"]
             , k <- (map show [1..9 :: Int]) ++ ["0", "-", "+"]
             ]
+        , modMask = mod4Mask
         , keys = myKeys
         , manageHook = myManageHook
         , layoutHook = myLayoutHook
