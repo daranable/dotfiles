@@ -1,7 +1,8 @@
 local _ENV = require("stdlib")
 
-local lgi = require("lgi")
-local Gio = lgi.require("Gio")
+local lgi  = require("lgi")
+local GLib = lgi.require("GLib")
+local Gio  = lgi.require("Gio")
 
 local Connection = {}
 Connection.__index = Connection
@@ -12,9 +13,14 @@ local busTypes = {
 }
 
 local function bus_get (busType)
-    -- the Gio.Async shim doesn't recognize bus_get as async
+    -- the Gio.Async shim doesn't recognize g_bus_get as async
     -- see https://github.com/pavouk/lgi/issues/142
-    Gio.bus_get(busTypes[busType], nil, coroutine.running())
+    Gio.bus_get(
+        busTypes[busType],   -- GBusType
+        nil,                 -- cancellable
+        coroutine.running(), -- callback
+        nil                  -- callback user data
+    )
     local _, result = coroutine.yield()
     local conn = Gio.bus_get_finish(result)
 
@@ -68,6 +74,101 @@ end
 
 
 
+local Proxy = {}
+Proxy.__index = Proxy
+
+function Connection:bind(owner, object, interface)
+    -- the Gio.Async shim doesn't recognize g_dbus_proxy_new as async
+    -- see https://github.com/pavouk/lgi/issues/142
+    Gio.DBusProxy.new(
+        self.gdbus,          -- GDBusConnection
+        {},                  -- GDBusProxyFlags
+        nil,                 -- GDBusInterfaceInfo
+        owner,               -- bus name
+        object,              -- object path
+        interface,           -- interface name
+        nil,                 -- cancellable
+        coroutine.running(), -- callback
+        nil                  -- callback user data
+    )
+    local _, result = coroutine.yield()
+    local proxy = Gio.DBusProxy.new_finish(result)
+
+    local this = {
+        __index = Proxy,
+        connection = self,
+        gdbus = proxy,
+        _handlers = {},
+    }
+
+    proxy.on_g_signal:connect(function(_, sender, signal, params)
+        if this._handlers[signal] then
+            for _, handler in pairs(this._handlers[signal]) do
+                pcall(handler, sender, signal, params)
+            end
+        end
+    end)
+
+    return setmetatable(this, this)
+end
+
+--- Gets the name this proxy is connected to.
+-- @treturn string
+function Proxy:getName()
+    return self.gdbus:get_name()
+end
+
+--- Gets the unique name that owns the name this proxy is connected to.
+-- @treturn string
+function Proxy:getNameOwner()
+    return self.gdbus:get_name_owner()
+end
+
+--- Gets the object path this proxy is for.
+-- @treturn string
+function Proxy:getObjectPath()
+    return self.gdbus:get_object_path()
+end
+
+--- Gets the interface name this proxy is for.
+-- @treturn string
+function Proxy:getInterfaceName()
+    return self.gdbus:get_interface_name()
+end
+
+function Proxy:on(signal, handler)
+    local handlers = self._handlers[signal]
+    if not handlers then
+        handlers = {}
+        self._handlers[signal] = handlers
+    end
+    handlers[handler] = handler
+end
+
+function Proxy:off(signal, handler)
+    local handlers = self._handlers[signal]
+    if handlers then
+        handlers[handler] = nil
+    end
+end
+
+function Proxy:get(name)
+    return self.gdbus:get_cached_property(name)
+end
+
+function Proxy:call(method)
+    return self.gdbus:async_call(
+        method,
+        nil,
+        {},
+        -1
+    )
+end
+
+
+
+
+
 local dbus = setmetatable({}, {
     __index = function (table, key)
         if nil ~= busTypes[key] then
@@ -78,23 +179,17 @@ local dbus = setmetatable({}, {
     end
 })
 
+function dbus.async(callback, ...)
+    Gio.Async.start(function(...)
+        local ok, err = pcall(callback, ...)
+        if not ok then
+            print("!ERROR! " .. tostring(err))
+        end
+    end)(...)
+end
 
-Gio.Async.call(function()
-    local ok, err = pcall(function()
-        local result = dbus.system.gdbus:async_call(
-            "org.freedesktop.UPower",
-            "/org/freedesktop/UPower",
-            "org.freedesktop.UPower",
-            "EnumerateDevices",
-            nil, -- arguments
-            nil, -- reply type
-            {}, -- flags
-            -1 -- timeout
-        )
+function dbus.sync(callback, ...)
+    Gio.Async.call(callback)(...)
+end
 
-        print("call " .. tostring(result.value[1].value[1]))
-    end)
-    if not ok then
-        print("!ERROR! " .. tostring(err))
-    end
-end)()
+return dbus
