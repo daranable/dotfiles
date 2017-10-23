@@ -3,7 +3,6 @@ local _ENV = require("stdlib")
 local dbus = require("dbus")
 
 
-
 local Device = {}
 Device.__index = Device
 
@@ -45,6 +44,18 @@ function Device:getType()
     else
         return "unknown"
     end
+end
+
+function Device:isLine()
+    return 1 == self.dbus:get("Type").value
+end
+
+function Device:isBattery()
+    return 2 == self.dbus:get("Type").value
+end
+
+function Device:isUPS()
+    return 3 == self.dbus:get("Type").value
 end
 
 --- Gets whether the device supplies power to this computer.
@@ -145,11 +156,11 @@ function Device:isFull()
 end
 
 function Device:onUpdate(handler)
-    self._onUpdate[handler] = handler
+    self.dbus:onUpdate(handler)
 end
 
 function Device:offUpdate(handler)
-    self._onUpdate[handler] = nil
+    self.dbus:offUpdate(handler)
 end
 
 
@@ -193,16 +204,7 @@ function upower:_deviceAdd(path)
         "org.freedesktop.UPower.Device"
     )
 
-    local device = setmetatable({
-        dbus = proxy,
-        _onUpdate = {},
-    }, Device)
-
-    proxy:on("Changed", function (sender, signal, args)
-        for _, handler in pairs(device._onUpdate) do
-            pcall(handler)
-        end
-    end)
+    local device = setmetatable({dbus = proxy}, Device)
 
     self._devices[path] = device
     for _, handler in pairs(self._onAdd) do

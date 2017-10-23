@@ -99,6 +99,7 @@ function Connection:bind(owner, object, interface)
         connection = self,
         gdbus = proxy,
         _handlers = {},
+        _onUpdate = {},
     }
 
     proxy.on_g_signal:connect(function(_, sender, signal, params)
@@ -106,6 +107,12 @@ function Connection:bind(owner, object, interface)
             for _, handler in pairs(this._handlers[signal]) do
                 pcall(handler, sender, signal, params)
             end
+        end
+    end)
+
+    proxy.on_g_properties_changed:connect(function(_, changed, inval)
+        for _, handler in pairs(this._onUpdate) do
+            pcall(handler)
         end
     end)
 
@@ -150,6 +157,14 @@ function Proxy:off(signal, handler)
     if handlers then
         handlers[handler] = nil
     end
+end
+
+function Proxy:onUpdate(handler)
+    self._onUpdate[handler] = handler
+end
+
+function Proxy:offUpdate(handler)
+    self._onUpdate[handler] = nil
 end
 
 function Proxy:get(name)
