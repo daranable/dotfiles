@@ -14,6 +14,7 @@ local Module = {}
 
 local Device = {}
 Device.widget_name = "upower_device"
+Device.show_time = false
 
 function Module.newDevice(upowerDevice)
     local this = wibox.layout.fixed.horizontal()
@@ -69,6 +70,12 @@ function Module.newDevice(upowerDevice)
         end,
     })
 
+    this._time = wibox.widget {
+        widget = wibox.widget.textbox,
+        visible = false,
+    }
+    this:add(this._time)
+
     this.upower:onUpdate(function()
         this:update()
     end)
@@ -77,11 +84,44 @@ function Module.newDevice(upowerDevice)
     return this
 end
 
+function Device:getTimeRemaining()
+    local seconds
+    if self.upower:isCharging() then
+        seconds = self.upower:getTimeToFull()
+    elseif self.upower:isDischarging() then
+        seconds = self.upower:getTimeToEmpty()
+    else
+        return nil
+    end
+
+    local str = ""
+
+    if seconds > 3600 then
+        str = str .. tostring(math.floor(seconds / 3600)) .. "h"
+    end
+
+    str = str .. " " .. tostring(math.floor(seconds % 3600 / 60)) .. "m"
+    return str
+end
+
 function Device:getDetailMarkup()
     local message = (
         self.upower:getState()
         .. " " .. tostring(self.upower:getEnergyPercentage()) .. "%"
     )
+
+    if self.upower:isCharging() or self.upower:isDischarging() then
+        local legend
+        if self.upower:isCharging() then
+            legend = "to full"
+        else
+            legend = "to empty"
+        end
+
+        message = message .. (
+            "\n" .. self:getTimeRemaining() .. " " .. legend
+        )
+    end
 
     if self.upower:isUPS() then
         message = message .. (
@@ -108,6 +148,13 @@ function Device:update()
         self.upower:isCharging()
         or self.upower:isOnline()
     )
+
+    if self.upower:isCharging() or self.upower:isDischarging() then
+        self._time.markup = self:getTimeRemaining()
+        self._time.visible = self.show_time
+    else
+        self._time.visible = false
+    end
 end
 
 

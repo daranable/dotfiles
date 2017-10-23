@@ -151,6 +151,14 @@ function Device:isCharging()
     return 1 == self.dbus:get("State").value
 end
 
+function Device:isDischarging()
+    return 2 == self.dbus:get("State").value
+end
+
+function Device:isEmpty()
+    return 3 == self.dbus:get("State").value
+end
+
 function Device:isFull()
     return 4 == self.dbus:get("State").value
 end
