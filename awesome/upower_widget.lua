@@ -4,7 +4,6 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local gtable = require("gears.table")
 local icon_theme = require("menubar.icon_theme")
-local naughty = require("naughty")
 local upower = require("upower")
 local wibox = require("wibox")
 
@@ -76,13 +75,20 @@ function Module.newDevice(upowerDevice)
 end
 
 function Device:getDetailMarkup()
-    return (
+    local message = (
         self.upower:getState()
         .. " " .. tostring(self.upower:getEnergyPercentage()) .. "%"
-        .. "\nModel: " .. self.upower:getVendor()
-            .. " " .. self.upower:getModel()
-        .. "\nSerial: " .. self.upower:getSerial()
     )
+
+    if self.upower:isUPS() then
+        message = message .. (
+            "\nModel: " .. self.upower:getVendor()
+                .. " " .. self.upower:getModel()
+            .. "\nSerial: " .. self.upower:getSerial()
+        )
+    end
+
+    return message
 end
 
 function Device:update()
@@ -98,7 +104,6 @@ function Device:update()
     self._charge.visible = (
         self.upower:isCharging()
         or self.upower:isOnline()
-        or (self.upower:getType() == "ups" and self.upower:isFull())
     )
 end
 
@@ -128,11 +133,11 @@ function Module.new(args)
     return this
 end
 
-function Container:_deviceAdd(path, upowerDevice)
-    print("widget " .. path)
+function Container:_deviceAdd(path, dev)
     if self._devices[path] then return end
+    if not dev:isBattery() and not dev:isUPS() then return end
 
-    local device = Module.newDevice(upowerDevice)
+    local device = Module.newDevice(dev)
     self._devices[path] = device
     self:add(device)
 end
