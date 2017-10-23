@@ -376,6 +376,12 @@ local clientbuttons = gears.table.join(
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
+--
+-- Get window values with xprops(1).
+--   instance  first half of WM_CLASS
+--   class     second half of WM_CLASS
+--   name      WM_NAME
+--   role      WM_WINDOW_ROLE
 awful.rules.rules = {
     -- All clients will match this rule.
     { rule = { },
@@ -395,16 +401,19 @@ awful.rules.rules = {
         instance = {
           "DTA",  -- Firefox addon DownThemAll.
           "copyq",  -- Includes session name in class.
+          "crx_gaedmjdfmmahhbjefcbgaolhhanlaolb", -- Authy
         },
         class = {
           "Arandr",
+          "Gimp",
           "Gpick",
           "Kruler",
           "MessageWin",  -- kalarm.
+          "pinentry", -- gpg
+          "Pinentry", -- gpg2
           "Sxiv",
-          "Wpa_gui",
-          "pinentry",
           "veromix",
+          "Wpa_gui",
           "xtightvncviewer"},
 
         name = {
