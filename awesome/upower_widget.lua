@@ -6,6 +6,7 @@ local gtable = require("gears.table")
 local icon_theme = require("menubar.icon_theme")
 local upower = require("upower")
 local wibox = require("wibox")
+local xres = require("beautiful.xresources")
 
 
 local Module = {}
@@ -29,13 +30,13 @@ function Module.newDevice(upowerDevice)
         layout = wibox.container.arcchart,
         bg = "#555555",
         start_angle = 1.5 * math.pi,
-        thickness = 2,
-        paddings = 2,
+        thickness = xres.apply_dpi(2),
+        paddings = xres.apply_dpi(2),
 
         min_value = 0,
         max_value = 100,
 
-        -- mirror the text to compensate for the mirroring below
+        -- mirror the icon to compensate for the mirroring below
         {   layout = wibox.container.mirror,
             reflection = {
                 horizontal = true,
@@ -45,7 +46,7 @@ function Module.newDevice(upowerDevice)
         },
     }
 
-    -- mirror the chart so it goes clockwise
+    -- mirror the chart so it goes up clockwise
     -- arcchart can only go up counterclockwise
     this:add(wibox.widget {
         layout = wibox.container.mirror,
@@ -53,8 +54,10 @@ function Module.newDevice(upowerDevice)
             horizontal = true,
             vertical = false,
         },
+
+        -- the chart needs a little bit of standoff
         {   layout = wibox.container.margin,
-            margins = 2,
+            margins = xres.apply_dpi(2),
             this._chart,
         },
     })
