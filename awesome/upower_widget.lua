@@ -97,10 +97,10 @@ function Device:getTimeRemaining()
     local str = ""
 
     if seconds > 3600 then
-        str = str .. tostring(math.floor(seconds / 3600)) .. "h"
+        str = str .. tostring(math.floor(seconds / 3600)) .. "h "
     end
 
-    str = str .. " " .. tostring(math.floor(seconds % 3600 / 60)) .. "m"
+    str = str .. tostring(math.floor(seconds % 3600 / 60)) .. "m"
     return str
 end
 
