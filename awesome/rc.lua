@@ -376,7 +376,7 @@ local clientbuttons = gears.table.join(
 
 -- Rules to apply to new clients (through the "manage" signal).
 --
--- Get window values with xprops(1).
+-- Get window values with xprop(1).
 --   instance  WM_CLASS, first string
 --   class     WM_CLASS, second string
 --   name      WM_NAME
@@ -425,6 +425,18 @@ awful.rules.rules = {
             }
         },
         properties = {floating = true},
+    },
+
+    -- non-floating clients
+    {   rule_any = {
+            instance = {
+                -- Tabs Outliner main window
+                "crx_eggkanocgddhmamlbiijnphhppkpkmkl",
+                -- Tabs Outliner via --app hack
+                "eggkanocgddhmamlbiijnphhppkpkmkl__activesessionview.html",
+            },
+        },
+        properties = {floating = false},
     },
 
     -- add titlebars to normal clients and dialogs
