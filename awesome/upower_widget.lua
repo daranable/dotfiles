@@ -124,7 +124,7 @@ function Device:getDetailMarkup()
     end
 
     if self.upower:isUPS() then
-        message = message .. (
+        message = "UPS " .. message .. (
             "\nModel: " .. self.upower:getVendor()
                 .. " " .. self.upower:getModel()
             .. "\nSerial: " .. self.upower:getSerial()
