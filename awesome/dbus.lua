@@ -1,5 +1,8 @@
 local _ENV = require("stdlib")
 
+local debug = require("debug")
+local naughty = require("naughty")
+
 local lgi  = require("lgi")
 local GLib = lgi.require("GLib")
 local Gio  = lgi.require("Gio")
@@ -172,17 +175,26 @@ local dbus = setmetatable({}, {
     end
 })
 
+local function pcall_notify(callback, ...)
+    xpcall(callback, function(err)
+        local msg = debug.traceback(tostring(err))
+        print("!DBus Error! " .. msg)
+
+        naughty.notify {
+            preset = naughty.config.presets.critical,
+            ignore_suspend = true,
+            title = "Error in DBus Async Thread",
+            text = msg,
+        }
+    end, ...)
+end
+
 function dbus.async(callback, ...)
-    Gio.Async.start(function(...)
-        local ok, err = pcall(callback, ...)
-        if not ok then
-            print("!ERROR! " .. tostring(err))
-        end
-    end)(...)
+    Gio.Async.start(pcall_notify)(callback, ...)
 end
 
 function dbus.sync(callback, ...)
-    Gio.Async.call(callback)(...)
+    Gio.Async.call(pcall_notify)(callback, ...)
 end
 
 return dbus
