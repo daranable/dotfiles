@@ -7,27 +7,6 @@ local Gio  = lgi.require("Gio")
 local Connection = {}
 Connection.__index = Connection
 
-local busTypes = {
-    ["system" ] = Gio.BusType.SYSTEM,
-    ["session"] = Gio.BusType.SESSION,
-}
-
-local function bus_get (busType)
-    -- the Gio.Async shim doesn't recognize g_bus_get as async
-    -- see https://github.com/pavouk/lgi/issues/142
-    Gio.bus_get(
-        busTypes[busType],   -- GBusType
-        nil,                 -- cancellable
-        coroutine.running(), -- callback
-        nil                  -- callback user data
-    )
-    local _, result = coroutine.yield()
-    local conn = Gio.bus_get_finish(result)
-
-    return setmetatable({gdbus = conn}, Connection)
-end
-
-
 --- Closes the connection.
 -- Once the connection is closed, operations such as sending a message
 -- will return with an error. Closing a connection won't automatically
@@ -78,21 +57,14 @@ local Proxy = {}
 Proxy.__index = Proxy
 
 function Connection:bind(owner, object, interface)
-    -- the Gio.Async shim doesn't recognize g_dbus_proxy_new as async
-    -- see https://github.com/pavouk/lgi/issues/142
-    Gio.DBusProxy.new(
+    local proxy = Gio.DBusProxy.async_new(
         self.gdbus,          -- GDBusConnection
         {},                  -- GDBusProxyFlags
         nil,                 -- GDBusInterfaceInfo
         owner,               -- bus name
         object,              -- object path
-        interface,           -- interface name
-        nil,                 -- cancellable
-        coroutine.running(), -- callback
-        nil                  -- callback user data
+        interface            -- interface name
     )
-    local _, result = coroutine.yield()
-    local proxy = Gio.DBusProxy.new_finish(result)
 
     local this = {
         __index = Proxy,
@@ -184,10 +156,16 @@ end
 
 
 
+local busTypes = {
+    ["system" ] = Gio.BusType.SYSTEM,
+    ["session"] = Gio.BusType.SESSION,
+}
+
 local dbus = setmetatable({}, {
     __index = function (table, key)
         if nil ~= busTypes[key] then
-            local conn = bus_get(key)
+            local conn = Gio.async_bus_get(busTypes[key])
+            conn = setmetatable({gdbus = conn}, Connection)
             table[key] = conn
             return conn
         end
