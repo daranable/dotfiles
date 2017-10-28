@@ -189,7 +189,7 @@ function upower:_connect()
         )
 
         self._upower:on("DeviceAdded", function (sender, signal, args)
-            self:_deviceAdd(args.value[1])
+            dbus.async(self._deviceAdd, self, args.value[1])
         end)
 
         self._upower:on("DeviceRemoved", function (sender, signal, args)
