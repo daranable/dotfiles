@@ -5,8 +5,10 @@ local beautiful = require("beautiful")
 local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
-local upower = require("upower_widget")
 
+local cpu_widget = require("streetturtle.cpu-widget.cpu-widget")
+local ram_widget = require("streetturtle.ram-widget.ram-widget")
+local upower = require("upower_widget")
 
 
 
@@ -74,6 +76,8 @@ return function(screen)
                 screen = "primary",
                 { widget = wibox.widget.systray },
             },
+            cpu_widget,
+            ram_widget,
             upower(),
             --{   widget = upower },
             {   widget = wibox.widget.textclock,
