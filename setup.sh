@@ -1,8 +1,15 @@
 #!/bin/bash
 
+set -e
+
+dir=$(dirname $(realpath $0))
 cd $HOME
 
 move_link () {
+    # convert the destination to an absolute path
+    dest=$(realpath $2)
+    target=$(realpath --relative-to=$(dirname $dest) $1)
+
     if [[ -e "$2" ]]; then
         mv "$2" "$2.old"
     fi
@@ -11,7 +18,7 @@ move_link () {
 }
 
 normal () {
-    move_link ".files/$1" ".$1"
+    move_link "$dir/$1" ".$1"
 }
 
 special () {
@@ -32,7 +39,7 @@ normal Xresources
 normal xmobarrc
 normal stalonetrayrc
 
-move_link .vim/vimrc .vimrc
+special .vim/vimrc .vimrc
 
 mkdir -p .gnupg
 special ../.files/gpg.conf .gnupg/gpg.conf
