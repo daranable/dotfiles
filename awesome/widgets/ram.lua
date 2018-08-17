@@ -5,7 +5,9 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
 local wibox = require("wibox")
-local naughty = require("naughty")
+local xres = require("beautiful.xresources")
+
+
 
 local poller = gears.object()
 
@@ -16,85 +18,101 @@ function poller:start()
     self._timer = gears.timer({timeout = 2})
     self._timer:connect_signal("timeout", function()
         local vars = {}
-        local total, avail, free
 
         meminfo:seek("set", 0)
         for line in meminfo:lines() do
             local key, value = line:match("^([^%s]+):%s*(%d+)")
             if key == "MemTotal" then
-                total = value
+                self.memTotal = tonumber(value)
             elseif key == "MemAvailable" then
-                avail = value
+                self.memAvail = tonumber(value)
             elseif key == "MemFree" then
-                free = value
+                self.memFree = tonumber(value)
+            elseif key == "SwapTotal" then
+                self.swapTotal = tonumber(value)
+            elseif key == "SwapFree" then
+                self.swapFree = tonumber(value)
             end
         end
 
-        self.percent = math.floor((total - avail) / total * 100 + 0.5)
-        self.data_list = {
-            {"used",  total - avail},
-            {"cache", avail - free},
-            {"free",  free},
-        }
+
+        self.memUsed = self.memTotal - self.memAvail
+        self.memCached = self.memAvail - self.memFree
+        self.swapUsed = self.swapTotal - self.swapFree
+
         self:emit_signal("update")
     end)
     self._timer:start()
     self._timer:emit_signal("timeout")
 end
 
+
+
 return function()
-    local theme = beautiful.get()
-
-    local textbox = wibox.widget {
-        widget = wibox.widget.textbox,
+    local swap_chart = wibox.widget {
+        layout = wibox.container.arcchart,
+        bg = "#555555",
+        start_angle = 1.5 * math.pi,
+        thickness = xres.apply_dpi(2),
+        paddings = xres.apply_dpi(2),
+        min_value = 0,
     }
 
-    local chart_box = wibox {
-        width = 400,
-        height = 200,
-        ontop = true,
-        screen = awesome.mouse.screen,
-        expand = true,
-        visible = false,
+    local mem_chart = wibox.widget {
+        layout = wibox.container.arcchart,
+        bg = "#555555",
+        start_angle = 1.5 * math.pi,
+        thickness = xres.apply_dpi(2),
+        paddings = xres.apply_dpi(2),
+        min_value = 0,
+
+        swap_chart,
     }
 
-    chart_box:setup {
-        id = 'chart',
-        widget = wibox.widget.piechart,
-        border_width = 0,
-        forced_width = 30,
-        forced_height = 30,
-        colors = {
-            "#aaaaaa",
-            "#888888",
-            "#555555",
-        },
+    local widget = wibox.widget {
+        layout = wibox.container.margin,
+        margins = xres.apply_dpi(2),
+
+        mem_chart,
     }
 
-    textbox:buttons(awful.util.table.join(
-        awful.button({}, 1, function()
-            if not chart_box.visible then
-                awful.placement.top_right(
-                    chart_box, {margins = {top = 25, right = 10}}
+    local tooltip = awful.tooltip {
+        objects = { widget },
+        timer_function = function()
+            local memPercent = math.floor(
+                poller.memUsed / poller.memTotal * 100 + 0.5
+            )
+
+            local cachePercent = math.floor(
+                poller.memCached / poller.memTotal * 100 + 0.5
+            )
+
+            local swapPercent
+            if poller.swapTotal > 0 then
+                swapPercent = math.floor(
+                    poller.swapUsed / poller.swapTotal * 100 + 0.5
                 )
-                chart_box.visible = true
             else
-                chart_box.visible = false
+                swapPercent = 0
             end
-        end)
-    ))
 
-    chart_box:buttons(awful.util.table.join(
-        awful.button({}, 1, function()
-            chart_box.visible = false
-        end)
-    ))
 
-    poller:connect_signal("update", function()
-        textbox.text = tostring(poller.percent) .. "%"
-        chart_box.chart.data_list = poller.data_list
+            return (
+                "RAM Used: " .. tostring(memPercent) .. "%\n"
+                .. "RAM Cached: " .. tostring(cachePercent) .. "%\n"
+                .. "Swap Used: " .. tostring(swapPercent) .. "%"
+            )
+        end,
+    }
+
+    poller:connect_signal("update", function(data)
+        swap_chart.max_value = data.swapTotal
+        swap_chart.value = data.swapUsed ~= 0 and data.swapUsed or nil
+
+        mem_chart.max_value = data.memTotal
+        mem_chart.value = data.memUsed ~= 0 and data.memUsed or nil
     end)
     poller:start()
 
-    return textbox
+    return widget
 end
