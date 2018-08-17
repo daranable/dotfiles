@@ -69,11 +69,21 @@ return function()
         swap_chart,
     }
 
+    -- mirror the chart so it goes up clockwise
+    -- arcchart can only go up counterclockwise
     local widget = wibox.widget {
-        layout = wibox.container.margin,
-        margins = xres.apply_dpi(2),
+        layout = wibox.container.mirror,
+        reflection = {
+            horizontal = true,
+            vertical = false,
+        },
 
-        mem_chart,
+        -- the chart needs a little bit of standoff
+        {   layout = wibox.container.margin,
+            margins = xres.apply_dpi(2),
+
+            mem_chart,
+        },
     }
 
     local tooltip = awful.tooltip {
