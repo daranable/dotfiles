@@ -40,6 +40,3 @@
 [submodule "vim/bundle/openscad"]
 	path = vim/bundle/openscad
 	url = git://github.com/sirtaj/vim-openscad.git
-[submodule "awesome/streetturtle"]
-	path = awesome/streetturtle
-	url = git://github.com/streetturtle/awesome-wm-widgets.git
