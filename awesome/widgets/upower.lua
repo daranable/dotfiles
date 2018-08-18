@@ -2,7 +2,7 @@ local _ENV = require("stdlib")
 
 local awful = require("awful")
 local beautiful = require("beautiful")
-local gtable = require("gears.table")
+local gears = require("gears")
 local icon_theme = require("menubar.icon_theme")
 local upower = require("upower")
 local wibox = require("wibox")
@@ -18,13 +18,23 @@ Device.show_time = false
 
 function Module.newDevice(upowerDevice)
     local this = wibox.layout.fixed.horizontal()
-    gtable.crush(this, Device, true)
+    gears.table.crush(this, Device, true)
 
     this.upower = upowerDevice
 
-    this._charge = wibox.widget {
-        widget = wibox.widget.imagebox,
-        image = "/home/sam/.files/awesome/charging.svg",
+    local icon_dir = gears.filesystem.get_configuration_dir() .. "/icons"
+
+    this._icons = wibox.widget {
+        layout = wibox.layout.stack,
+        top_only = true,
+
+        {   widget = wibox.widget.imagebox,
+            image = icon_dir .. "/power_discharging.svg",
+        },
+
+        {   widget = wibox.widget.imagebox,
+            image = icon_dir .. "/charging.svg",
+        },
     }
 
     this._chart = wibox.widget {
@@ -43,7 +53,7 @@ function Module.newDevice(upowerDevice)
                 horizontal = true,
                 vertical = false,
             },
-            this._charge,
+            this._icons,
         },
     }
 
@@ -144,10 +154,10 @@ function Device:update()
         self._chart.colors = { "#aaaaaa" }
     end
 
-    self._charge.visible = (
+    self._icons.raise((
         self.upower:isCharging()
         or self.upower:isOnline()
-    )
+    ) and 1 or 2)
 
     if self.upower:isCharging() or self.upower:isDischarging() then
         self._time.markup = self:getTimeRemaining()
@@ -164,7 +174,7 @@ Container.widget_name = "upower"
 
 function Module.new(args)
     local this = wibox.layout.fixed.horizontal()
-    gtable.crush(this, Container, true)
+    gears.table.crush(this, Container, true)
 
     this._devices = {}
 
