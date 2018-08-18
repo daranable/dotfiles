@@ -24,17 +24,14 @@ function Module.newDevice(upowerDevice)
 
     local icon_dir = gears.filesystem.get_configuration_dir() .. "/icons"
 
-    this._icons = wibox.widget {
-        layout = wibox.layout.stack,
-        top_only = true,
+    this._charge = wibox.widget {
+        widget = wibox.widget.imagebox,
+        image = icon_dir .. "/power_charging.svg",
+    }
 
-        {   widget = wibox.widget.imagebox,
-            image = icon_dir .. "/power_discharging.svg",
-        },
-
-        {   widget = wibox.widget.imagebox,
-            image = icon_dir .. "/charging.svg",
-        },
+    this._discharge = wibox.widget {
+        widget = wibox.widget.imagebox,
+        image = icon_dir .. "/power_discharging.svg",
     }
 
     this._chart = wibox.widget {
@@ -53,7 +50,10 @@ function Module.newDevice(upowerDevice)
                 horizontal = true,
                 vertical = false,
             },
-            this._icons,
+            {   layout = wibox.layout.stack,
+                this._charge,
+                this._discharge,
+            },
         },
     }
 
@@ -154,10 +154,11 @@ function Device:update()
         self._chart.colors = { "#aaaaaa" }
     end
 
-    self._icons.raise((
+    self._charge.visible = (
         self.upower:isCharging()
         or self.upower:isOnline()
-    ) and 1 or 2)
+    )
+    self._discharge.visible = not self._charge.visible
 
     if self.upower:isCharging() or self.upower:isDischarging() then
         self._time.markup = self:getTimeRemaining()
