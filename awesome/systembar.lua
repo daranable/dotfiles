@@ -11,6 +11,7 @@ local wibox = require("wibox")
 local upower = require("upower_widget")
 
 local widget_ram = require("widgets.ram")
+local widget_cpu = require("widgets.cpu")
 
 
 
@@ -78,6 +79,7 @@ return function(screen)
                 screen = "primary",
                 { widget = wibox.widget.systray },
             },
+            widget_cpu(),
             widget_ram(),
             upower(),
             --{   widget = upower },

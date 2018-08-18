@@ -1,8 +1,6 @@
 local _ENV = require("stdlib")
 
-local awesome = require("awesome")
 local awful = require("awful")
-local beautiful = require("beautiful")
 local gears = require("gears")
 local wibox = require("wibox")
 local xres = require("beautiful.xresources")
@@ -15,10 +13,8 @@ function poller:start()
     if self._timer then return end
 
     local meminfo = io.open("/proc/meminfo", "r")
-    self._timer = gears.timer({timeout = 2})
+    self._timer = gears.timer({timeout = 5})
     self._timer:connect_signal("timeout", function()
-        local vars = {}
-
         meminfo:seek("set", 0)
         for line in meminfo:lines() do
             local key, value = line:match("^([^%s]+):%s*(%d+)")
