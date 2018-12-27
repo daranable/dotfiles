@@ -53,7 +53,7 @@ set wildmode=longest,list:longest
 
 set number numberwidth=4
 
-if has( "gui_running" )
+if has("gui_running")
     " use Airline's tab bar in favor of the GUI widget
     set guioptions-=e
 
@@ -66,7 +66,9 @@ if has( "gui_running" )
     set guioptions-=b               " bottom
 
     if has("gui_gtk")
-        set guifont=Meslo\ LG\ S\ for\ Powerline\ 9
+        set guifont=Droid_Sans_Mono_Dotted_for_Powerline_9
+    elseif has("gui_win32")
+        set guifont=Droid_Sans_Mono_Dotted_for_Powe:h10
     endif
 endif
 
