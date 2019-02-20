@@ -43,6 +43,7 @@ function poller:start()
 end
 
 
+local GiB = 1024 * 1024
 
 return function()
     local swap_chart = wibox.widget {
@@ -103,10 +104,13 @@ return function()
             end
 
 
-            return (
-                "RAM Used: " .. tostring(memPercent) .. "%\n"
-                .. "RAM Cached: " .. tostring(cachePercent) .. "%\n"
-                .. "Swap Used: " .. tostring(swapPercent) .. "%"
+            return string.format(
+                '<tt>RAM Used:  %3d%% %4.1f/%2.f GiB\n'
+                 .. 'RAM Cached:%3d%% %4.1f/%2.f GiB\n'
+                 .. 'Swap Used: %3d%% %4.1f/%2.f GiB</tt>',
+                memPercent, poller.memUsed / GiB, poller.memTotal / GiB,
+                cachePercent, poller.memCached / GiB, poller.memTotal / GiB,
+                swapPercent, poller.swapUsed / GiB, poller.swapTotal / GiB
             )
         end,
     }
