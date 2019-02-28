@@ -12,12 +12,6 @@ let g:airline#extensions#tabline#tab_min_count=2
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline#extensions#tabline#enabled=1
 
-" set up the Pathogen runtime path mangling system
-" this causes plugins to be loaded, so any variable-based
-" plugin configuration must be done above this line
-runtime bundle/pathogen/autoload/pathogen.vim
-execute pathogen#infect()
-
 " don't show the intro message on startup
 set shortmess+=I
 
