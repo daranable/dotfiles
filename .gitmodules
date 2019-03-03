@@ -37,15 +37,15 @@
 [submodule "vim/pack/plugins/start/airline"]
 	path = vim/pack/plugins/start/airline
 	url = git://github.com/vim-airline/vim-airline.git
-[submodule "vim/pack/plugins/start/vimproc"]
-	path = vim/pack/typescript/opt/vimproc
-	url = git://github.com/Shougo/vimproc.vim.git
-[submodule "vim/pack/plugins/start/tsuquyomi"]
-	path = vim/pack/typescript/opt/tsuquyomi
-	url = git://github.com/Quramy/tsuquyomi.git
-[submodule "vim/pack/syntax/start/typescript"]
-	path = vim/pack/typescript/start/typescript
-	url = git://github.com/leafgarland/typescript-vim.git
 [submodule "vim/pack/plugins/start/syntastic"]
 	path = vim/pack/plugins/start/syntastic
 	url = git://github.com/vim-syntastic/syntastic.git
+[submodule "vim/pack/syntax/start/yajs"]
+	path = vim/pack/syntax/start/yajs
+	url = git://github.com/othree/yajs.vim
+[submodule "vim/pack/syntax/start/yats"]
+	path = vim/pack/syntax/start/yats
+	url = git://github.com/HerringtonDarkholme/yats.vim
+[submodule "nvim/pack/start/nvim-typescript"]
+	path = nvim/pack/completion/start/nvim-typescript
+	url = git://github.com/mhartington/nvim-typescript.git
