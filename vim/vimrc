@@ -3,6 +3,12 @@
 " this ensures consistency between platforms
 set nocompatible all&
 
+" if we're in NeoVim, add Vim config to the runtimepath
+if has("nvim")
+    set runtimepath^=~/.vim runtimepath+=~/.vim/after
+    let &packpath = &runtimepath
+endif
+
 if &term != "linux"
     let airline_powerline_fonts=1
 endif
