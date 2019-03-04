@@ -84,28 +84,3 @@ if &term != "linux"
     colorscheme solarized
 endif
 
-
-" style the :sign gutter identically to the 'number' gutter
-highlight clear SignColumn
-highlight link SignColumn LineNr
-
-
-""" Syntastic
-
-" run in passive mode by default for all files
-" this may be overridden per buffer by ftplugins
-let g:syntastic_mode_map = {'mode': 'passive'}
-
-" run checks when a file is first opened
-"let g:syntastic_check_on_open = 1
-
-" do not run checks when exiting Vim
-let g:syntastic_check_on_wq = 0
-
-
-" don't show baloons on hover in gVim
-let g:syntastic_enable_balloons = 0
-
-
-highlight SyntasticErrorSign term=bold cterm=bold ctermfg=1 ctermbg=0
-highlight SyntasticWarningSign term=bold cterm=bold ctermfg=5 ctermbg=0

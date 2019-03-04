@@ -37,9 +37,6 @@
 [submodule "vim/pack/plugins/start/airline"]
 	path = vim/pack/plugins/start/airline
 	url = git://github.com/vim-airline/vim-airline.git
-[submodule "vim/pack/plugins/start/syntastic"]
-	path = vim/pack/plugins/start/syntastic
-	url = git://github.com/vim-syntastic/syntastic.git
 [submodule "vim/pack/syntax/start/yajs"]
 	path = vim/pack/syntax/start/yajs
 	url = git://github.com/othree/yajs.vim
