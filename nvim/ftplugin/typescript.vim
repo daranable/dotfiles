@@ -4,5 +4,5 @@
 " this prevents flicker when nvim-typescript refreshes the signs
 set signcolumn=yes
 
-
-set omnifunc=typescriptcomplete#Complete
+" enable omni completion via nvim-typescript
+set omnifunc=TSOmnicFunc
