@@ -39,7 +39,7 @@ export DEBEMAIL="sam@maltera.com"
 # if the modern (2.1+) GPG agent is installed, start it
 # and interrogate it to set the legacy environment variables
 if command -v gpg-connect-agent >/dev/null 2>&1; then
-	export $(gpg-connect-agent 2>/dev/null <<-'END' \
+	export $(gpg-connect-agent 2>/dev/null <<-END \
 			| awk 'RS=""; { if ($4 == "OK") print $1 "=" $3; }'
 		updatestartuptty
 
