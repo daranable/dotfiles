@@ -192,11 +192,6 @@ export MANWIDTH=80
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# load RVM interactive mode if it's installed
-if [ -f "$HOME/.rvm/scripts/rvm" ]; then
-    . "$HOME/.rvm/scripts/rvm"
-fi
-
 # load NVM interactive mode if it's installed
 if [ -d "$HOME/.nvm" ]; then
     export NVM_DIR="$HOME/.nvm"
@@ -204,6 +199,11 @@ if [ -d "$HOME/.nvm" ]; then
     . "$NVM_DIR/bash_completion"
 fi
 
+# load rbenv interactive mode if it's installed
+if command -v rbenv >/dev/null; then
+    export RBENV_ROOT=$HOME/.local/opt/rbenv
+    eval "$(rbenv init -)"
+fi
 
 if [[ -e "$HOME/.local/bin/aur" ]]; then
     aur () {
