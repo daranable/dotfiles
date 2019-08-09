@@ -1,6 +1,6 @@
 [user]
 	name = Sam Hanes
-	email = sam@maltera.com
+	email = sam@fullstacklabs.co
 [core]
 	excludesfile = ~/.gitignore
 [push]
