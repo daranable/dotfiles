@@ -38,7 +38,7 @@ gears.wallpaper.set("solid:black")
 
 
 -- This is used later as the default terminal and editor to run.
-local terminal = "xterm"
+local terminal = "alacritty"
 local editor = "vim"
 local editor_cmd = terminal .. " -e " .. editor
 
@@ -168,6 +168,12 @@ awesome.root.keys(gears.table.join(
         hotkeys_popup.show_help,
         {description="show help", group="awesome"}
     ),
+
+    awful.key({modkey}, "b",
+        function () awful.spawn("xscreensaver-command -lock") end,
+        {description="lock screen", group="awesome"}
+    ),
+        
 
 
     awful.key({modkey}, "j",
