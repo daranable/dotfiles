@@ -9,7 +9,7 @@ local wibox = require("wibox")
 local widget_cpu = require("widgets.cpu")
 local widget_ram = require("widgets.ram")
 local widget_thermal = require("widgets.thermal")
---local widget_upower = require("widgets.upower")
+local widget_upower = require("widgets.upower")
 
 
 
@@ -80,7 +80,7 @@ return function(screen)
             widget_thermal(),
             widget_cpu(),
             widget_ram(),
-            --widget_upower(),
+            widget_upower(),
             {   widget = wibox.widget.textclock,
                 format = "%_d %a %H:%M:%S",
                 refresh = 1,
