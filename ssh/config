@@ -1,0 +1,37 @@
+
+Host *.ops *.rnd *.stg
+    Hostname %h.procoretech.internal
+
+# Legacy production (procoretech)
+Host *.procoretech*.com !bastion.*
+    ProxyCommand ssh -W %h:%p bastion.production.procoretech.com
+
+# DR operations (procore-rnd-operations/us-east-2)
+Host *.dr00.*.ops.procoretech.internal
+  ProxyCommand ssh -W %h:%p bastion.us-east-2.ops.procoretech.com
+
+# Operations (procore-rnd-operations/us-east-1)
+Host *.ops.procoretech.internal
+   ProxyCommand ssh -W %h:%p bastion.ops.procoretech.com
+
+# us02 Production (procore-rnd-production/us-west-2)
+Host *.us02.*.rnd.procoretech.internal
+   ProxyCommand ssh -W %h:%p bastion.us-west-2.rnd.procoretech.com
+
+# us01 Production (procore-rnd-production/us-east-1)
+Host *.rnd.procoretech.internal
+   ProxyCommand ssh -W %h:%p bastion.rnd.procoretech.com
+
+# Staging (procore-rnd-staging/us-east-1)
+Host *.stg.procoretech.internal
+   ProxyCommand ssh -W %h:%p bastion.stg.procoretech.com
+
+Host *.procoretech*.com *.procoretech.internal
+    #User shanes
+    User sam.hanes-contractor@procore.com
+
+Host *
+    CanonicalizeHostname always
+    Protocol 2
+    Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+
