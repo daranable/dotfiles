@@ -40,7 +40,11 @@ return function()
     local timer = gears.timer({timeout = 1})
     timer:connect_signal("timeout", function()
         local total = toggl:getTotalTimeToday()
-        text_today.markup = format_time(total)
+        if total >= 8 * 60 * 60 then
+            text_today.markup = '<span color="#22aa22">' .. format_time(total) .. '</span>'
+        else
+            text_today.markup = format_time(total)
+        end
 
         local current = toggl:getCurrentEntryTime()
         if current == nil then
