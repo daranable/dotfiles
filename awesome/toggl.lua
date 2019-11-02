@@ -29,7 +29,7 @@ function toggl:start()
     if not config then return end
     self._config = json.decode(config:read("*a"))
 
-    self._timer = gears.timer({timeout = 60})
+    self._timer = gears.timer({timeout = 5 * 60})
     self._timer:connect_signal("timeout", function()
         self:poll()
     end)
@@ -86,6 +86,15 @@ function toggl:getTotalTimeToday()
     end
 
     return total
+end
+
+function toggl:getCurrentEntryTime()
+    for _, entry in pairs(self._entries) do
+        if entry.duration < 0 then
+            return os.time() + entry.duration
+        end
+    end
+    return nil
 end
 
 return toggl
