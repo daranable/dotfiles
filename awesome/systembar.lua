@@ -10,6 +10,7 @@ local widget_cpu = require("widgets.cpu")
 local widget_ram = require("widgets.ram")
 local widget_thermal = require("widgets.thermal")
 local widget_upower = require("widgets.upower")
+local widget_toggl = require("widgets.toggl")
 
 
 
@@ -77,6 +78,7 @@ return function(screen)
                 screen = "primary",
                 { widget = wibox.widget.systray },
             },
+            widget_toggl(),
             widget_thermal(),
             widget_cpu(),
             widget_ram(),
