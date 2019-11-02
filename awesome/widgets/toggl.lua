@@ -49,6 +49,10 @@ return function()
         local current = toggl:getCurrentEntryTime()
         if current == nil then
             text_current.markup = '<span color="#555555">00:00</span>'
+        elseif current >= 3 * 60 * 60 then
+            text_current.markup = '<span color="#dd2222">' .. format_time(current) .. '</span>'
+        elseif current >= 2 * 60 * 60 then
+            text_current.markup = '<span color="#cc9900">' .. format_time(current) .. '</span>'
         else
             text_current.markup = format_time(current)
         end
