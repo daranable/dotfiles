@@ -4,7 +4,6 @@ local _ENV = require("stdlib")
 local gears = require("gears")
 local wibox = require("wibox")
 local xres = require("beautiful.xresources")
---local naughty = require("naughty")
 
 local fs = gears.filesystem
 
@@ -45,7 +44,7 @@ return function()
 
         local current = toggl:getCurrentEntryTime()
         if current == nil then
-            text_current.markup = '<span color="#cccccc">stopped</span'
+            text_current.markup = '<span color="#555555">00:00</span>'
         else
             text_current.markup = format_time(current)
         end

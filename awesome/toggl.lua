@@ -5,7 +5,6 @@ local gears = require("gears")
 local basexx = require("basexx")
 local json = require("json")
 local request = require("http.request")
---local naughty = require("naughty")
 
 
 local API_URL = "https://api_token@www.toggl.com"
@@ -28,6 +27,11 @@ function toggl:start()
     local config = io.open(config_file, "r")
     if not config then return end
     self._config = json.decode(config:read("*a"))
+
+    self._ignore_projects = {}
+    for _, id in pairs(self._config.ignore_projects) do
+        self._ignore_projects[id] = true
+    end
 
     self._timer = gears.timer({timeout = 5 * 60})
     self._timer:connect_signal("timeout", function()
@@ -65,9 +69,12 @@ function toggl:poll()
     local headers, stream = assert(req:go())
     local body = assert(stream:get_body_as_string())
 
+
     local entries = {}
-    for _, value in pairs(json.decode(body)) do
-        entries[value.id] = value
+    for _, entry in pairs(json.decode(body)) do
+        if not self._ignore_projects[entry.pid] then
+            entries[entry.id] = entry
+        end
     end
 
     self._entries = entries
