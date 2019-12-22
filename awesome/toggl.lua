@@ -43,19 +43,23 @@ local function parse_3339(input)
     return os.date("*t", os.time(result) - offset)
 end
 
+local function show_error(title, message)
+    print(string.format("!! Toggl %s: %s", title, message))
+    naughty.notify {
+        preset = naughty.config.presets.critical,
+        ignore_suspend = true,
+        title = title,
+        text = message,
+    }
+end
+
+
 local function pcall_notify(callback, ...)
     xpcall(
         callback,
         function (err)
             local msg = debug.traceback(tostring(err), 2)
-            print("!Toggl Error! " .. msg)
-
-            naughty.notify {
-                preset = naughty.config.presets.critical,
-                ignore_suspend = true,
-                title = "Error in Toggl Async Thread",
-                text = msg
-            }
+            show_error("Error in Toggl Async Thread", msg)
         end,
         ...
     )
@@ -67,10 +71,14 @@ end
 
 function toggl:start()
     if self._timer then return end
+    self._entries = {}
 
     local config_file = os.getenv("HOME") .. "/.config/awesome_toggl.json"
     local config = io.open(config_file, "r")
-    if not config then return end
+    if not config then
+        show_error("Toggl", "failed to load ~/.config/awesome_toggl.json")
+        return
+    end
     self._config = json.decode(config:read("*a"))
 
     self._ignore_projects = {}
@@ -90,11 +98,11 @@ function toggl:start()
         )
 
         if not sock then
-            print("Toggl WS failed to connect: " .. tostring(err))
+            show_error("Toggl WebSocket", "failed to connect: " .. tostring(err))
         end
 
         sock.on_closed = function()
-            print("Toggl WS closed")
+            show_error("Toggl Websocket", "socket closed.")
         end
 
         sock.on_message = function(_, _, buf)
@@ -127,7 +135,6 @@ function toggl:start()
         })
     end)
 
-    self._entries = {}
 
     self._timer = gears.timer({timeout = 5 * 60})
     self._timer:connect_signal("timeout", function()
@@ -163,16 +170,23 @@ function toggl:poll()
     )
 
     self._soup:queue_message(msg, function(_, msg, _)
-        local body = msg.response_body:flatten():get_data()
+        if msg.status_code == 200 then
+            local body = msg.response_body:flatten():get_data()
 
-        local entries = {}
-        for _, entry in pairs(json.decode(body)) do
-            if not self._ignore_projects[entry.pid] then
-                entries[entry.id] = entry
+            local entries = {}
+            for _, entry in pairs(json.decode(body)) do
+                if not self._ignore_projects[entry.pid] then
+                    entries[entry.id] = entry
+                end
             end
-        end
 
-        self._entries = entries
+            self._entries = entries
+        else
+            show_error(
+                "Error in Toggl Poller",
+                string.format("Server returned %d %s", msg.status_code, msg.reason_phrase)
+            )
+        end
     end)
 end
 
