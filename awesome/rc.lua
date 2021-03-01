@@ -173,6 +173,11 @@ awesome.root.keys(gears.table.join(
         function () awful.spawn("xscreensaver-command -lock") end,
         {description="lock screen", group="awesome"}
     ),
+
+    awful.key({modkey, "Shift"}, "b",
+        function () awful.spawn("xset dpms force off") end,
+        {description="turn off screens", group="awesome"}
+    ),
         
 
 
