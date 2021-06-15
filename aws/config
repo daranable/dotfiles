@@ -1,35 +1,17 @@
 [default]
 region = us-east-1
 
-[okta]
-aws_saml_url = home/amazon_aws/0oam7c8zug7UmP09P0x7/272
-mfa_factor_type = token:software:totp
-mfa_provider = GOOGLE
+[profile fullstack]
+region = us-east-1
 
+[profile rv-attach]
+region = us-east-1
 
-[profile prnd-ops]
-role_arn = arn:aws:iam::749942219478:role/human-role/SREContractorPowerUser
+[profile tcn]
+region = us-west-2
 
-[profile prnd-ops-ir]
-role_arn = arn:aws:iam::749942219478:role/human-role/SREContractorIncidentResponse
+[profile monarc]
+region = us-west-2
 
-
-[profile prnd-prod]
-role_arn = arn:aws:iam::507856705865:role/human-role/SREContractorPowerUser
-
-[profile prnd-prod-ir]
-role_arn = arn:aws:iam::507856705865:role/human-role/SREContractorIncidentResponse
-
-
-[profile prnd-stg]
-role_arn = arn:aws:iam::220696059325:role/human-role/SREContractorPowerUser
-
-[profile prnd-stg-ir]
-role_arn = arn:aws:iam::220696059325:role/human-role/SREContractorIncidentResponse
-
-
-[profile procoretech]
-role_arn = arn:aws:iam::221721793454:role/human-role/SREContractorPowerUser
-
-[profile procoretech-ir]
-role_arn = arn:aws:iam::221721793454:role/human-role/SREContractorIncidentResponse
+[profile tgi]
+region = us-east-1
