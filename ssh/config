@@ -1,37 +1,82 @@
 
-Host *.ops *.rnd *.stg
-    Hostname %h.procoretech.internal
+Host web.fsl.ssh
+    HostName 198.199.92.204
 
-# Legacy production (procoretech)
-Host *.procoretech*.com !bastion.*
-    ProxyCommand ssh -W %h:%p bastion.production.procoretech.com
+Host survey-prod-nat.fsl.ssh
+    HostName 52.12.110.148
 
-# DR operations (procore-rnd-operations/us-east-2)
-Host *.dr00.*.ops.procoretech.internal
-  ProxyCommand ssh -W %h:%p bastion.us-east-2.ops.procoretech.com
+Host *.fsl.ssh
+    User sam
 
-# Operations (procore-rnd-operations/us-east-1)
-Host *.ops.procoretech.internal
-   ProxyCommand ssh -W %h:%p bastion.ops.procoretech.com
 
-# us02 Production (procore-rnd-production/us-west-2)
-Host *.us02.*.rnd.procoretech.internal
-   ProxyCommand ssh -W %h:%p bastion.us-west-2.rnd.procoretech.com
+Host squid.tcn.ssh
+    HostName 18.237.76.195
 
-# us01 Production (procore-rnd-production/us-east-1)
-Host *.rnd.procoretech.internal
-   ProxyCommand ssh -W %h:%p bastion.rnd.procoretech.com
+Host *.tcn.ssh
+    User fsl-shanes
 
-# Staging (procore-rnd-staging/us-east-1)
-Host *.stg.procoretech.internal
-   ProxyCommand ssh -W %h:%p bastion.stg.procoretech.com
 
-Host *.procoretech*.com *.procoretech.internal
-    #User shanes
-    User sam.hanes-contractor@procore.com
+Host prod.monarc.ssh
+    HostName 10.0.30.10
+
+Host dev.monarc.ssh
+    HostName 10.0.30.39
+
+Host spark-dev.monarc.ssh
+    HostName 10.0.30.46
+
+Host *.monarc.ssh
+    User samhanes
+
+
+Host bastion.legacy.fcbh.ssh
+    HostName 54.202.23.158
+    User ec2-user
+    IdentityFile ~/.ssh/fcbh-eb-legacy.pem
+
+# FCBH vpc-0ec0445c25bbc16d3 legacy dbp 172.20.0.0/16
+Host 172.20.*
+    ProxyCommand ssh -AW %h:%p bastion.legacy.fcbh.ssh
+    User ec2-user
+    IdentityFile ~/.ssh/fcbh-reader-web-stage.pem
+
+Host bastion.prod.fcbh.ssh
+    #HostName 54.148.94.125
+    HostName 34.215.119.74
+    User ec2-user
+    IdentityFile ~/.ssh/fcbh-eb-prod.pem
+
+# FCBH vpc-0720be0d173137a64 prod dbp 172.18.0.0/16
+Host 172.18.*
+    ProxyCommand ssh -AW %h:%p bastion.prod.fcbh.ssh
+    User ec2-user
+    IdentityFile ~/.ssh/fcbh-eb-prod.pem
+
+
+Host *.bibleapp.gideons.org
+    User shanes
+
+# TGI vpc-09e1c715b3405ec5e prod dbp 172.19.0.0/16
+Host 172.19.*
+    ProxyCommand ssh -W %h:%p bastion.bibleapp.gideons.org
+    User ec2-user
+    IdentityFile ~/.ssh/id_tgi_eb_prod
+
+# TGI vpc-0b513fb7b92846c99 dev dbp 172.17.0.0/16
+Host 172.17.*
+    ProxyCommand ssh -W %h:%p bastion.dev.bibleapp.gideons.org
+    User ec2-user
+    IdentityFile ~/.ssh/id_tgi_eb_dev
+
+
+Host bsewinn.com.dream.website
+    User wp_ex2erg
+
+Host testbsewinn.com.dream.website
+    User wp_mdzmve
+
 
 Host *
     CanonicalizeHostname always
     Protocol 2
     Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-
