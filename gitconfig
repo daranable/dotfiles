@@ -9,8 +9,6 @@
 [push]
     default = upstream
 
-[hub]
-    host = git.dev.whs
 
 [alias]
     pr = "! git fetch $1 +refs/pull/$2/head:refs/remotes/$1/pr/$2 && git checkout -B l-pr-$2 $1/pr/$2 #"
