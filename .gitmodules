@@ -49,3 +49,6 @@
 [submodule "vim/pack/syntax/start/terraform"]
 	path = vim/pack/syntax/start/terraform
 	url = git://github.com/hashivim/vim-terraform.git
+[submodule "vim/pack/syntax/start/puppet"]
+	path = vim/pack/syntax/start/puppet
+	url = git://github.com/rodjek/vim-puppet.git
