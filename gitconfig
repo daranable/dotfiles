@@ -4,6 +4,7 @@
 
 [core]
     excludesfile = ~/.gitignore
+    whitespace = tabwidth=4
 
 [push]
     default = upstream
