@@ -1,5 +1,6 @@
 local _ENV = require("stdlib")
 
+local naughty = require("naughty")
 local dbus = require("dbus")
 
 
@@ -196,8 +197,9 @@ function upower:_connect()
             self:_deviceRemove(args.value[1])
         end)
 
-        local devs = self._upower:call("EnumerateDevices")
-        for _, dev in ipairs(devs.value[1]) do
+        local devs = self._upower:call("EnumerateDevices"):get_child_value(0)
+        for idx = 0, devs:n_children() - 1 do
+            local dev = devs:get_child_value(idx):get_string()
             self:_deviceAdd(dev)
         end
     end)

@@ -83,7 +83,7 @@ return function(screen)
             widget_upower(),
             {   widget = wibox.widget.textclock,
                 format = "%_d %a %H:%M:%S",
-                timeout = 1,
+                refresh = 1,
             },
         },
     })

@@ -10,7 +10,7 @@ local fs = gears.filesystem
 
 
 local whitelist = {
-    coretemp = true,
+    k10temp = true,
     amdgpu = true,
 }
 

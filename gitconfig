@@ -1,22 +1,32 @@
 [user]
-	name = Sam Hanes
-	email = sam@maltera.com
+    name = Sam Hanes
+    email = sam@maltera.com
+
 [core]
-	excludesfile = ~/.gitignore
+    excludesfile = ~/.gitignore
+    whitespace = tabwidth=4
+
 [push]
-	default = upstream
-[hub]
-    host = git.dev.whs
+    default = upstream
+
+[pull]
+    rebase = false
 
 [alias]
     pr = "! git fetch $1 +refs/pull/$2/head:refs/remotes/$1/pr/$2 && git checkout -B l-pr-$2 $1/pr/$2 #"
     unpr = "! git branch -Dr $1/pr/$2 && git branch -D l-pr-$2 #"
     bdiff = "! remote=$1; local=$2; shift; shift; git diff `git merge-base $remote $local` $local"
     shorthash = rev-list -n 1 --abbrev=12 --abbrev-commit
+
 [color]
-	ui = auto
+    ui = auto
+
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+# force all GitHub access to use SSH instead of HTTPS
+[url "ssh://git@github.com"]
+    insteadOf = https://github.com

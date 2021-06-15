@@ -40,6 +40,8 @@
 
 #if X_RESOLUTION >= 7559
 Xft.dpi: 192
+#elif X_RESOLUTION >= 6417
+Xft.dpi: 163
 #elif X_RESOLUTION >= 5669
 Xft.dpi: 144
 #elif X_RESOLUTION >= 4646
