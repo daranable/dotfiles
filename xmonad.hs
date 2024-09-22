@@ -138,6 +138,7 @@ myManageHook = composeAll
   , isChrome <&&> title =? "Authy" --> doFloat
   , className =? "mpv" --> doFloat
   , className =? "Gimp" --> doFloat
+  , className =? "Pinentry" --> doFloat
   , placeHook( inBounds( underMouse( 0, 0 )))
   , manageDocks
   , fullscreenManageHook

@@ -6,6 +6,10 @@ local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 
+local widget_cpu = require("widgets.cpu")
+local widget_ram = require("widgets.ram")
+local widget_thermal = require("widgets.thermal")
+local widget_upower = require("widgets.upower")
 
 
 
@@ -73,9 +77,13 @@ return function(screen)
                 screen = "primary",
                 { widget = wibox.widget.systray },
             },
+            widget_thermal(),
+            widget_cpu(),
+            widget_ram(),
+            widget_upower(),
             {   widget = wibox.widget.textclock,
                 format = "%_d %a %H:%M:%S",
-                timeout = 1,
+                refresh = 1,
             },
         },
     })

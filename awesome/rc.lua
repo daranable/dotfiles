@@ -38,7 +38,7 @@ gears.wallpaper.set("solid:black")
 
 
 -- This is used later as the default terminal and editor to run.
-local terminal = "xterm"
+local terminal = "alacritty"
 local editor = "vim"
 local editor_cmd = terminal .. " -e " .. editor
 
@@ -168,6 +168,17 @@ awesome.root.keys(gears.table.join(
         hotkeys_popup.show_help,
         {description="show help", group="awesome"}
     ),
+
+    awful.key({modkey}, "b",
+        function () awful.spawn("xscreensaver-command -lock") end,
+        {description="lock screen", group="awesome"}
+    ),
+
+    awful.key({modkey, "Shift"}, "b",
+        function () awful.spawn("xset dpms force off") end,
+        {description="turn off screens", group="awesome"}
+    ),
+        
 
 
     awful.key({modkey}, "j",
@@ -374,58 +385,76 @@ local clientbuttons = gears.table.join(
     awful.button({ modkey }, 3, awful.mouse.client.resize))
 
 
--- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
+--
+-- Get window values with xprop(1).
+--   instance  WM_CLASS, first string
+--   class     WM_CLASS, second string
+--   name      WM_NAME
+--   role      WM_WINDOW_ROLE
 awful.rules.rules = {
-    -- All clients will match this rule.
-    { rule = { },
-      properties = { border_width = beautiful.border_width,
-                     border_color = beautiful.border_normal,
-                     focus = awful.client.focus.filter,
-                     raise = true,
-                     keys = clientkeys,
-                     buttons = clientbuttons,
-                     screen = awful.screen.preferred,
-                     placement = awful.placement.no_overlap+awful.placement.no_offscreen
-     }
+    -- all clients will match this rule
+    {   rule = {},
+        properties = {
+            border_width = beautiful.border_width,
+            border_color = beautiful.border_normal,
+            focus = awful.client.focus.filter,
+            raise = true,
+            keys = clientkeys,
+            buttons = clientbuttons,
+            screen = awful.screen.preferred,
+            placement = awful.placement.no_overlap+awful.placement.no_offscreen
+        },
     },
 
-    -- Floating clients.
-    { rule_any = {
-        instance = {
-          "DTA",  -- Firefox addon DownThemAll.
-          "copyq",  -- Includes session name in class.
+    -- floating clients
+    {   rule_any = {
+            instance = {
+                "DTA", -- Firefox addon DownThemAll.
+                "copyq", -- Includes session name in class.
+                "crx_gaedmjdfmmahhbjefcbgaolhhanlaolb", -- Authy
+            },
+            class = {
+                "Arandr",
+                "Gimp",
+                "Gpick",
+                "Kruler",
+                "MessageWin", -- kalarm.
+                "pinentry", -- gpg
+                "Pinentry", -- gpg2
+                "Sxiv",
+                "veromix",
+                "Wpa_gui",
+                "xtightvncviewer"
+            },
+            name = {
+                "Event Tester", -- xev.
+            },
+            role = {
+                "AlarmWindow", -- Thunderbird's calendar.
+                "pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
+            }
         },
-        class = {
-          "Arandr",
-          "Gpick",
-          "Kruler",
-          "MessageWin",  -- kalarm.
-          "Sxiv",
-          "Wpa_gui",
-          "pinentry",
-          "veromix",
-          "xtightvncviewer"},
-
-        name = {
-          "Event Tester",  -- xev.
-        },
-        role = {
-          "AlarmWindow",  -- Thunderbird's calendar.
-          "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-        }
-      }, properties = { floating = true }},
-
-    -- Add titlebars to normal clients and dialogs
-    { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = true }
+        properties = {floating = true},
     },
 
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+    -- non-floating clients
+    {   rule_any = {
+            instance = {
+                -- Tabs Outliner main window
+                "crx_eggkanocgddhmamlbiijnphhppkpkmkl",
+                -- Tabs Outliner via --app hack
+                "eggkanocgddhmamlbiijnphhppkpkmkl__activesessionview.html",
+            },
+        },
+        properties = {floating = false},
+    },
+
+    -- add titlebars to normal clients and dialogs
+    {   rule_any = {type = {"normal", "dialog"}},
+        properties = {titlebars_enabled = true},
+    },
 }
--- }}}
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.

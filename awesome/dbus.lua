@@ -1,26 +1,14 @@
 local _ENV = require("stdlib")
 
-local lgi = require("lgi")
-local Gio = lgi.require("Gio")
+local debug = require("debug")
+local naughty = require("naughty")
+
+local lgi  = require("lgi")
+local GLib = lgi.require("GLib")
+local Gio  = lgi.require("Gio")
 
 local Connection = {}
 Connection.__index = Connection
-
-local busTypes = {
-    ["system" ] = Gio.BusType.SYSTEM,
-    ["session"] = Gio.BusType.SESSION,
-}
-
-local function bus_get (busType)
-    -- the Gio.Async shim doesn't recognize bus_get as async
-    -- see https://github.com/pavouk/lgi/issues/142
-    Gio.bus_get(busTypes[busType], nil, coroutine.running())
-    local _, result = coroutine.yield()
-    local conn = Gio.bus_get_finish(result)
-
-    return setmetatable({gdbus = conn}, Connection)
-end
-
 
 --- Closes the connection.
 -- Once the connection is closed, operations such as sending a message
@@ -68,33 +56,145 @@ end
 
 
 
+local Proxy = {}
+Proxy.__index = Proxy
+
+function Connection:bind(owner, object, interface)
+    local proxy = Gio.DBusProxy.async_new(
+        self.gdbus,          -- GDBusConnection
+        {},                  -- GDBusProxyFlags
+        nil,                 -- GDBusInterfaceInfo
+        owner,               -- bus name
+        object,              -- object path
+        interface            -- interface name
+    )
+
+    local this = {
+        __index = Proxy,
+        connection = self,
+        gdbus = proxy,
+        _handlers = {},
+        _onUpdate = {},
+    }
+
+    proxy.on_g_signal:connect(function(_, sender, signal, params)
+        if this._handlers[signal] then
+            for _, handler in pairs(this._handlers[signal]) do
+                pcall(handler, sender, signal, params)
+            end
+        end
+    end)
+
+    proxy.on_g_properties_changed:connect(function(_, changed, inval)
+        for _, handler in pairs(this._onUpdate) do
+            pcall(handler)
+        end
+    end)
+
+    return setmetatable(this, this)
+end
+
+--- Gets the name this proxy is connected to.
+-- @treturn string
+function Proxy:getName()
+    return self.gdbus:get_name()
+end
+
+--- Gets the unique name that owns the name this proxy is connected to.
+-- @treturn string
+function Proxy:getNameOwner()
+    return self.gdbus:get_name_owner()
+end
+
+--- Gets the object path this proxy is for.
+-- @treturn string
+function Proxy:getObjectPath()
+    return self.gdbus:get_object_path()
+end
+
+--- Gets the interface name this proxy is for.
+-- @treturn string
+function Proxy:getInterfaceName()
+    return self.gdbus:get_interface_name()
+end
+
+function Proxy:on(signal, handler)
+    local handlers = self._handlers[signal]
+    if not handlers then
+        handlers = {}
+        self._handlers[signal] = handlers
+    end
+    handlers[handler] = handler
+end
+
+function Proxy:off(signal, handler)
+    local handlers = self._handlers[signal]
+    if handlers then
+        handlers[handler] = nil
+    end
+end
+
+function Proxy:onUpdate(handler)
+    self._onUpdate[handler] = handler
+end
+
+function Proxy:offUpdate(handler)
+    self._onUpdate[handler] = nil
+end
+
+function Proxy:get(name)
+    return self.gdbus:get_cached_property(name)
+end
+
+function Proxy:call(method)
+    return self.gdbus:async_call(
+        method,
+        nil,
+        {},
+        -1
+    )
+end
+
+
+
+
+
+local busTypes = {
+    ["system" ] = Gio.BusType.SYSTEM,
+    ["session"] = Gio.BusType.SESSION,
+}
+
 local dbus = setmetatable({}, {
     __index = function (table, key)
         if nil ~= busTypes[key] then
-            local conn = bus_get(key)
+            local conn = Gio.async_bus_get(busTypes[key])
+            conn = setmetatable({gdbus = conn}, Connection)
             table[key] = conn
             return conn
         end
     end
 })
 
+local function pcall_notify(callback, ...)
+    xpcall(callback, function(err)
+        local msg = debug.traceback(tostring(err))
+        print("!DBus Error! " .. msg)
 
-Gio.Async.call(function()
-    local ok, err = pcall(function()
-        local result = dbus.system.gdbus:async_call(
-            "org.freedesktop.UPower",
-            "/org/freedesktop/UPower",
-            "org.freedesktop.UPower",
-            "EnumerateDevices",
-            nil, -- arguments
-            nil, -- reply type
-            {}, -- flags
-            -1 -- timeout
-        )
+        naughty.notify {
+            preset = naughty.config.presets.critical,
+            ignore_suspend = true,
+            title = "Error in DBus Async Thread",
+            text = msg,
+        }
+    end, ...)
+end
 
-        print("call " .. tostring(result.value[1].value[1]))
-    end)
-    if not ok then
-        print("!ERROR! " .. tostring(err))
-    end
-end)()
+function dbus.async(callback, ...)
+    Gio.Async.start(pcall_notify)(callback, ...)
+end
+
+function dbus.sync(callback, ...)
+    Gio.Async.call(pcall_notify)(callback, ...)
+end
+
+return dbus

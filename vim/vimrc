@@ -3,6 +3,12 @@
 " this ensures consistency between platforms
 set nocompatible all&
 
+" if we're in NeoVim, add Vim config to the runtimepath
+if has("nvim")
+    set runtimepath^=~/.vim runtimepath+=~/.vim/after
+    let &packpath = &runtimepath
+endif
+
 if &term != "linux"
     let airline_powerline_fonts=1
 endif
@@ -11,12 +17,6 @@ let g:airline#extensions#tabline#show_buffers=0
 let g:airline#extensions#tabline#tab_min_count=2
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline#extensions#tabline#enabled=1
-
-" set up the Pathogen runtime path mangling system
-" this causes plugins to be loaded, so any variable-based
-" plugin configuration must be done above this line
-runtime bundle/pathogen/autoload/pathogen.vim
-execute pathogen#infect()
 
 " don't show the intro message on startup
 set shortmess+=I
@@ -53,7 +53,7 @@ set wildmode=longest,list:longest
 
 set number numberwidth=4
 
-if has( "gui_running" )
+if has("gui_running")
     " use Airline's tab bar in favor of the GUI widget
     set guioptions-=e
 
@@ -66,7 +66,9 @@ if has( "gui_running" )
     set guioptions-=b               " bottom
 
     if has("gui_gtk")
-        set guifont=Meslo\ LG\ S\ for\ Powerline\ 9
+        set guifont=Droid_Sans_Mono_Dotted_for_Powerline_9
+    elseif has("gui_win32")
+        set guifont=Droid_Sans_Mono_Dotted_for_Powe:h10
     endif
 endif
 
@@ -81,3 +83,4 @@ if &term != "linux"
     let g:solarized_termtrans=1
     colorscheme solarized
 endif
+
