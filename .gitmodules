@@ -1,54 +1,54 @@
 [submodule "vim/bundle/solarized"]
 	path = vim/pack/themes/start/solarized
-	url = git://github.com/altercation/vim-colors-solarized.git
+	url = https://github.com/altercation/vim-colors-solarized.git
 [submodule "vim/bundle/sensible"]
 	path = vim/pack/plugins/start/sensible
-	url = git://github.com/tpope/vim-sensible.git
+	url = https://github.com/tpope/vim-sensible.git
 [submodule "vim/bundle/airline"]
 	path = vim/pack/plugins/start/airline
-	url = git://github.com/bling/vim-airline.git
+	url = https://github.com/bling/vim-airline.git
 [submodule "vim/bundle/fugitive"]
 	path = vim/pack/plugins/start/fugitive
-	url = git://github.com/tpope/vim-fugitive.git
+	url = https://github.com/tpope/vim-fugitive.git
 [submodule "dockerfile.vim"]
 	path = dockerfile.vim
-	url = git://github.com/Elemecca/dockerfile.vim.git
+	url = https://github.com/Elemecca/dockerfile.vim.git
 [submodule "vim/bundle/dockerfile"]
 	path = vim/pack/syntax/start/dockerfile
-	url = git://github.com/Elemecca/dockerfile.vim.git
+	url = https://github.com/Elemecca/dockerfile.vim.git
 [submodule "vim/bundle/toml"]
 	path = vim/pack/syntax/start/toml
-	url = git://github.com/cespare/vim-toml.git
+	url = https://github.com/cespare/vim-toml.git
 [submodule "vim/bundle/rust.vim"]
 	path = vim/pack/syntax/start/rust
-	url = git://github.com/rust-lang/rust.vim.git
+	url = https://github.com/rust-lang/rust.vim.git
 [submodule "vim/bundle/vim-twig"]
 	path = vim/pack/syntax/start/twig
-	url = git://github.com/lumiliet/vim-twig.git
+	url = https://github.com/lumiliet/vim-twig.git
 [submodule "vim/bundle/ael"]
 	path = vim/pack/syntax/start/ael
-	url = git://github.com/vim-scripts/ael.vim
+	url = https://github.com/vim-scripts/ael.vim
 [submodule "vim/bundle/openscad"]
 	path = vim/pack/syntax/start/openscad
-	url = git://github.com/sirtaj/vim-openscad.git
+	url = https://github.com/sirtaj/vim-openscad.git
 [submodule "vim/pack/plugins/start/airline-themes"]
 	path = vim/pack/plugins/start/airline-themes
-	url = git://github.com/vim-airline/vim-airline-themes.git
+	url = https://github.com/vim-airline/vim-airline-themes.git
 [submodule "vim/pack/plugins/start/airline"]
 	path = vim/pack/plugins/start/airline
-	url = git://github.com/vim-airline/vim-airline.git
+	url = https://github.com/vim-airline/vim-airline.git
 [submodule "vim/pack/syntax/start/yajs"]
 	path = vim/pack/syntax/start/yajs
-	url = git://github.com/othree/yajs.vim
+	url = https://github.com/othree/yajs.vim
 [submodule "vim/pack/syntax/start/yats"]
 	path = vim/pack/syntax/start/yats
-	url = git://github.com/HerringtonDarkholme/yats.vim
+	url = https://github.com/HerringtonDarkholme/yats.vim
 [submodule "nvim/pack/start/nvim-typescript"]
 	path = nvim/pack/completion/start/nvim-typescript
-	url = git://github.com/mhartington/nvim-typescript.git
+	url = https://github.com/mhartington/nvim-typescript.git
 [submodule "vim/pack/syntax/start/terraform"]
 	path = vim/pack/syntax/start/terraform
-	url = git://github.com/hashivim/vim-terraform.git
+	url = https://github.com/hashivim/vim-terraform.git
 [submodule "vim/pack/syntax/start/puppet"]
 	path = vim/pack/syntax/start/puppet
-	url = git://github.com/rodjek/vim-puppet.git
+	url = https://github.com/rodjek/vim-puppet.git
