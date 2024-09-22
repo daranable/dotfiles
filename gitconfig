@@ -1,7 +1,6 @@
 [user]
-    name = Sam Hanes
-    email = sam@maltera.com
-
+	name = Robert Avery
+	email = daranable@gmail.com
 [core]
     excludesfile = ~/.gitignore
     whitespace = tabwidth=4
